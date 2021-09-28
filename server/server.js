@@ -103,7 +103,7 @@ app.post('/signin', (req, res) => {
 
 //Check input from the frontend register form with the data in the database, insert the data in the database
 app.post('/register', (req, res) => {
-
+      console.log(req.body)
     //Destructure the request from the body
     const { email, name, password } = req.body;
 
