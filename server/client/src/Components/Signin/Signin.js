@@ -4,7 +4,7 @@ import React from 'react';
 class Signin extends React.Component {
 
     constructor(props){
-
+        console.log(props)
         super(props)
 
         this.state = {
@@ -59,6 +59,8 @@ class Signin extends React.Component {
         .then(user => {
             console.log("sign In",user)
           if(user.id){
+              console.log(this.props.loadUser)
+              console.log(this.props.onRouteChange)
             this.props.loadUser(user);
             this.props.onRouteChange('home');
           } else {

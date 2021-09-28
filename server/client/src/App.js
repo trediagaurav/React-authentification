@@ -45,6 +45,7 @@ class App extends Component {
       joined: data.joined
 
     }})
+    console.log("app js", this.state.user.name)
   }
 
   
@@ -73,7 +74,7 @@ class App extends Component {
     return (
       <div className="App">
 
-        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange}/>
+        <Navigation isSignedIn={isSignedIn} onRouteChange={this.onRouteChange} loadUser={this.state.user}/>
 
 
         { /* Jsx Javascript expression to know when to change the route */
@@ -83,6 +84,7 @@ class App extends Component {
              <div>
 
                 <h1>DASHBOARD</h1>
+                <p>{this.state.user.name}</p>
 
              </div>
 
