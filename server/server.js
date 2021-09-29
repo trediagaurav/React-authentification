@@ -23,13 +23,48 @@ const cors = require('cors');
 
 const knex = require('knex');
 
+const session = require('express-session');
+
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
+app.use(express.static(__dirname + '/client/src/'));
 
 app.use(bodyParser.json());
 
 app.use(cors());
+
+app.use(cookieParser());
+
+
+app.use(
+  session({
+    key: 'user_sid',
+    secret: 'some_secret_key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 300000
+    }
+  })
+);
+
+app.use((req, res, next) => {
+  console.log(req.session)
+  if (req.cookies.user_sid && !req.session.user) {
+      res.clearCookie('user_sid');
+  }
+  next();
+});
+
+const sessionChecker = (req, res, next) => {
+  if (req.session.user && req.cookies.user_sid) {
+      res.redirect('/signin');
+  } else {
+      next();
+  }
+};
 
 
 //CONNECT TO LOCAL POSTGRESQL DATABASE
@@ -62,11 +97,12 @@ const db = knex({
 
 
 //Root Route
-app.get('/', (req, res) => {
-
+app.get('/', sessionChecker, (req, res) => {
+  console.log(sessionChecker)
     // res.send('this is working');
 
     //response with the users database
+    res.redirect('/signin')
     res.send(database.users);
 })
 
