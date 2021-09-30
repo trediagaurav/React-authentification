@@ -12,7 +12,7 @@ Routes:
 
 
 */
-
+require('dotenv').config()
 const express = require('express');
 
 const bodyParser = require('body-parser');
@@ -29,6 +29,10 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
+const jwt = require('jsonwebtoken');
+
+app.use(express.json())
+
 app.use(express.static(__dirname + '/client/src/'));
 
 app.use(bodyParser.json());
@@ -37,34 +41,43 @@ app.use(cors());
 
 app.use(cookieParser());
 
-
-app.use(
-  session({
-    key: 'user_sid',
-    secret: 'some_secret_key',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        expires: 300000
-    }
-  })
-);
-
-app.use((req, res, next) => {
-  console.log(req.session)
-  if (req.cookies.user_sid && !req.session.user) {
-      res.clearCookie('user_sid');
+const posts = [
+  {
+    username: 'Gaurav',
+    title: "session"
+  },
+  {
+    username: "Ramya",
+    title: "JWT"
   }
-  next();
-});
+]
+// app.use(
+//   session({
+//     key: 'user_sid',
+//     secret: 'some_secret_key',
+//     resave: false,
+//     saveUninitialized: false,
+//     cookie: {
+//         expires: 300000
+//     }
+//   })
+// );
 
-const sessionChecker = (req, res, next) => {
-  if (req.session.user && req.cookies.user_sid) {
-      res.redirect('/signin');
-  } else {
-      next();
-  }
-};
+// app.use((req, res, next) => {
+//   console.log(req.session)
+//   if (req.cookies.user_sid && !req.session.user) {
+//       res.clearCookie('user_sid');
+//   }
+//   next();
+// });
+
+// const sessionChecker = (req, res, next) => {
+//   if (req.session.user && req.cookies.user_sid) {
+//       res.redirect('/signin');
+//   } else {
+//       next();
+//   }
+// };
 
 
 //CONNECT TO LOCAL POSTGRESQL DATABASE
@@ -82,9 +95,42 @@ const db = knex({
 
   });
 
+  ////////////////// JWT Testing /////////////////
   
+  app.get('/posts', authenticateToken, (req, res) =>{
+    console.log(req.body)
+    res.json(posts.filter(post => post.username === req.user.name))
+  })
+  app.post('/login', (req, res) =>{
+    //AUthenticate the user
+    const username = req.body.username
+    const user = { name: username }
+    console.log("user", user)
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+    console.log(accessToken)
+    res.json({accessToken: accessToken})
+
+  })
+
+  function authenticateToken(req, res, next){
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(" ")[1]
+    if(token == null) return res.sendStatus(401)
+
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(err, user)=>{
+      if(err) return res.sendStatus(403)
+      req.user = user
+      console.log('req.user',req.user)
+      next()
+    })
+  }
 
 
+
+
+
+
+/////////////////////////////////////////////
   //Test DB Connection
   //console.log(db.select('*').from('users'));
 
@@ -97,38 +143,66 @@ const db = knex({
 
 
 //Root Route
-app.get('/', sessionChecker, (req, res) => {
-  console.log(sessionChecker)
-    // res.send('this is working');
-
-    //response with the users database
-    res.redirect('/signin')
-    res.send(database.users);
-})
+// app.get('/', (req, res) => {
+//     // res.send('this is working');
+//     //response with the users database
+//     res.send(database.users);
+// })
 
 
 
 //Check the input from the frontend sign in from with the user data from the database
 app.post('/signin', (req, res) => {
-
-
-    db.select('email', 'hash').from('login')
-    .where('email', '=', req.body.email)
-    .then(data => {
-      const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
-      // console.log(isValid);
-      if(isValid){
-       return db.select('*').from('users')
-        .where('email', '=', req.body.email)
-        .then(user => {
-          res.json(user[0])
-        })
-         .catch(err => res.status(400).json('unable to get user'))
-      } else {
-        res.status(400).json("wrong credentials")
-      }
-    })
-     .catch(err => res.status(400).json('wrong credentials'))
+  const userEmail = req.body.email
+  const mail = { email: userEmail }
+  console.log(req.body)
+  db.select('email', 'hash').from('login')
+  .where('email', '=', req.body.email)
+  .then(data =>{
+    console.log("after sign in",data)
+    const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
+    console.log(isValid);
+    if(isValid){
+      console.log("mail", mail)
+      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET)
+      console.log(accessToken)
+      return db.select('*').from('users')
+          .where('email', '=', req.body.email)
+          .then(user => {
+            res.json({
+              accessToken: accessToken,
+              user: user[0]}) 
+            })
+           .catch(err => res.status(400).json('unable to get user'))
+        } else {
+          res.status(400).json("wrong credentials")
+        }
+      })
+       .catch(err => res.status(400).json('wrong credentials'))
+  
+    // db.select('email', 'hash').from('login')
+    // .where('email', '=', req.body.email)
+    // .then(data => {
+    //   const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
+    //   console.log(isValid);
+    //   if(isValid){
+    //     // const userMail = req.body.email
+    //     // const mail = { email: userMail }
+    //     // console.log("mail", mail)
+    //     // const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET)
+    //     // console.log(accessToken)
+    //     // res.json({accessToken: accessToken}) 
+    //    return db.select('*').from('users')
+    //     .where('email', '=', req.body.email)
+    //     .then(user => {
+    //       res.json(user[0])
+    //     })
+    //      .catch(err => res.status(400).json('unable to get user'))
+    //   } else {
+    //     res.status(400).json("wrong credentials")
+    //   }
+    // })
+    //  .catch(err => res.status(400).json('wrong credentials'))
 
 
 

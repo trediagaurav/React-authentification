@@ -1,0 +1,11 @@
+GET http://localhost:3001/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiR2F1cmF2IiwiaWF0IjoxNjMzMDA3ODY5fQ.fak7SPr9D55Rycx0OfVQKgow1X-hKLuBnv3gREYjrRc
+
+###
+
+POST http://localhost:3001/login
+Content-Type: application/json
+
+{
+   "username": "Gaurav"
+}

@@ -46,25 +46,32 @@ class Signin extends React.Component {
                 password: this.state.signInPassword
             })
         })
-        //Check for success
-        // .then(response => response.json())
-        // .then(data => {
-
-        //     if (data === 'success') {
-        //         //Change the route to home
-        //         this.props.onRouteChange('home')
-        //     } 
-        // })
         .then(response => response.json())
-        .then(user => {
-            console.log("sign In",user)
-          if(user.id){
+        .then(data => {
+            console.log("sign In",data)
+            this.props.onRouteChange('home');
+          if(data.user.id){
               console.log(this.props.loadUser)
               console.log(this.props.onRouteChange)
-            this.props.loadUser(user);
-            this.props.onRouteChange('home');
+            this.props.loadUser(data.user);
           } else {
             this.setState({notRegister: 'You are not registered'});
+          }
+          if(data.accessToken){
+                auth = () => {
+                fetch('http://localhost:3001/posts', {
+                method: 'post',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    token: data.token
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                })
+            })
+                
+            }
           }
         })
 
