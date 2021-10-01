@@ -105,8 +105,6 @@ const db = knex({
       console.log(verify)
       res.json(verify)
     });
-    // res.json(posts.filter(post => post.username === req.user.name))
-    // res.json(posts)
   })
   app.post('/login', (req, res) =>{
     //AUthenticate the user
@@ -172,7 +170,7 @@ app.post('/signin', (req, res) => {
     console.log(isValid);
     if(isValid){
       console.log("mail", mail)
-      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET)
+      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
       console.log("access token generated",accessToken)
       return db.select('*').from('users')
           .where('email', '=', req.body.email)
@@ -187,36 +185,17 @@ app.post('/signin', (req, res) => {
         }
       })
        .catch(err => res.status(400).json('wrong credentials'))
-  
-    // db.select('email', 'hash').from('login')
-    // .where('email', '=', req.body.email)
-    // .then(data => {
-    //   const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
-    //   console.log(isValid);
-    //   if(isValid){
-    //     // const userMail = req.body.email
-    //     // const mail = { email: userMail }
-    //     // console.log("mail", mail)
-    //     // const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET)
-    //     // console.log(accessToken)
-    //     // res.json({accessToken: accessToken}) 
-    //    return db.select('*').from('users')
-    //     .where('email', '=', req.body.email)
-    //     .then(user => {
-    //       res.json(user[0])
-    //     })
-    //      .catch(err => res.status(400).json('unable to get user'))
-    //   } else {
-    //     res.status(400).json("wrong credentials")
-    //   }
-    // })
-    //  .catch(err => res.status(400).json('wrong credentials'))
-
-
-
 })
 
-
+app.post('/authenticate',authenticateToken, (req, res) =>{
+  console.log(req.body)
+  db.select('*').from('users').then(data => {
+    console.log('Users:', data);
+    const verify = (data.filter(post => post.email === req.user.email))
+    console.log(verify)
+    res.json(verify)
+  });
+})
 
 
 //Check input from the frontend register form with the data in the database, insert the data in the database

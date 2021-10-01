@@ -13,7 +13,11 @@ class Signin extends React.Component {
 
             signInPassword: '',
 
-            notRegister: ''
+            notRegister: '',
+
+            login:false,
+
+            store:null
         }
     }
 
@@ -49,7 +53,6 @@ class Signin extends React.Component {
         .then(response => response.json())
         .then(data => {
             console.log("sign In",data)
-            this.props.onRouteChange('home');
           if(data.user.id){
               console.log(this.props.loadUser)
               console.log(this.props.onRouteChange)
@@ -57,27 +60,44 @@ class Signin extends React.Component {
           } else {
             this.setState({notRegister: 'You are not registered'});
           }
-        //   if(data.accessToken){
-        //         auth = () => {
-        //         fetch('http://localhost:3001/posts', {
-        //         method: 'post',
-        //         headers: {'Content-Type': 'application/json'},
-        //         body: JSON.stringify({
-        //             token: data.token
-        //         })
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             console.log(data)
-        //         })
-        //         })
-                
-        //     }
-        //   }
-        })
-
-        
+          if(data.accessToken){
+              console.log("token received")
+                localStorage.setItem('login',JSON.stringify({
+                    login:true,
+                    token:data.accessToken
+                }))
+              this.props.onRouteChange('home');
+              this.auth(data.accessToken)
+            }     
+        })        
     }
 
+    auth = (e)=>{
+        fetch('http://localhost:3001/authenticate', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${e}`
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data){
+                this.props.onRouteChange('home');
+            }
+        })
+    }
+    storeCollector = () =>{
+        let store = JSON.parse(localStorage.getItem('login'))
+        console.log("store",store)
+        if(store && store.login){
+        this.props.onRouteChange('home');
+        this.setState({store:store})
+        }
+    }
+    componentDidMount() {
+       this.storeCollector()
+    }
     render(){
 
         const { onRouteChange } = this.props
