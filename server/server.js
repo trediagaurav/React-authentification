@@ -97,9 +97,16 @@ const db = knex({
 
   ////////////////// JWT Testing /////////////////
   
-  app.get('/posts', authenticateToken, (req, res) =>{
-    console.log(req.body)
-    res.json(posts.filter(post => post.username === req.user.name))
+  app.get('/posts',authenticateToken, (req, res) =>{
+    console.log(req.user.email)
+    db.select('*').from('users').then(data => {
+      console.log('Users:', data);
+      const verify = (data.filter(post => post.email === req.user.email))
+      console.log(verify)
+      res.json(verify)
+    });
+    // res.json(posts.filter(post => post.username === req.user.name))
+    // res.json(posts)
   })
   app.post('/login', (req, res) =>{
     //AUthenticate the user
@@ -107,14 +114,15 @@ const db = knex({
     const user = { name: username }
     console.log("user", user)
     const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
-    console.log(accessToken)
     res.json({accessToken: accessToken})
 
   })
 
   function authenticateToken(req, res, next){
     const authHeader = req.headers['authorization']
+    console.log("authHead:", authHeader)
     const token = authHeader && authHeader.split(" ")[1]
+    console.log("token:", token)
     if(token == null) return res.sendStatus(401)
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(err, user)=>{
@@ -136,7 +144,7 @@ const db = knex({
 
   //Get Users data from Database
   db.select('*').from('users').then(data => {
-    console.log('Users:', data);
+    // console.log('Users:', data);
   });
   
 
@@ -165,7 +173,7 @@ app.post('/signin', (req, res) => {
     if(isValid){
       console.log("mail", mail)
       const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET)
-      console.log(accessToken)
+      console.log("access token generated",accessToken)
       return db.select('*').from('users')
           .where('email', '=', req.body.email)
           .then(user => {

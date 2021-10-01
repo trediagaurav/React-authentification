@@ -41,8 +41,13 @@ const posts = [
 
 
   app.get('/posts', authenticateToken, (req, res) =>{
-    console.log(req.user.name)
-    res.json(posts.filter(post => post.username === req.user.name))
+    console.log(req.user.email)
+    db.select('*').from('users').then(data => {
+      console.log('Users:', data);
+      const verify = (data.filter(post => post.email === req.user.email))
+      console.log(verify)
+      res.json(verify)
+    });
   })
   app.post('/login', (req, res) =>{
     //AUthenticate the user

@@ -57,22 +57,22 @@ class Signin extends React.Component {
           } else {
             this.setState({notRegister: 'You are not registered'});
           }
-          if(data.accessToken){
-                auth = () => {
-                fetch('http://localhost:3001/posts', {
-                method: 'post',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    token: data.token
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
-                })
-            })
+        //   if(data.accessToken){
+        //         auth = () => {
+        //         fetch('http://localhost:3001/posts', {
+        //         method: 'post',
+        //         headers: {'Content-Type': 'application/json'},
+        //         body: JSON.stringify({
+        //             token: data.token
+        //         })
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             console.log(data)
+        //         })
+        //         })
                 
-            }
-          }
+        //     }
+        //   }
         })
 
         
