@@ -9,6 +9,7 @@ const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
             onRouteChange('signout')
             localStorage.clear()
         }
+
         if (isSignedIn) {
 
             return(

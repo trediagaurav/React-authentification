@@ -17,7 +17,9 @@ class Signin extends React.Component {
 
             login:false,
 
-            store:null
+            store:null,
+
+            userData:''
         }
     }
 
@@ -54,19 +56,15 @@ class Signin extends React.Component {
         .then(data => {
             console.log("sign In",data)
           if(data.user.id){
-              console.log(this.props.loadUser)
+              console.log('loadUser',data.user)
               console.log(this.props.onRouteChange)
             this.props.loadUser(data.user);
+            this.setState({userData:data.user})
+            console.log('username',this.state.userData)
           } else {
             this.setState({notRegister: 'You are not registered'});
           }
           if(data.accessToken){
-              console.log("token received")
-                localStorage.setItem('login',JSON.stringify({
-                    login:true,
-                    token:data.accessToken
-                }))
-              this.props.onRouteChange('home');
               this.auth(data.accessToken)
             }     
         })        
@@ -82,21 +80,37 @@ class Signin extends React.Component {
         })
         .then(response => response.json())
         .then(data => {
+            console.log("from auth", data)
             if(data){
+                console.log("token received")
+                localStorage.setItem('login',JSON.stringify({
+                    login:true,
+                    token:e,
+                }))
+                localStorage.setItem('userInfo',JSON.stringify({
+                    user:this.state.userData
+                }))                
                 this.props.onRouteChange('home');
             }
         })
     }
     storeCollector = () =>{
         let store = JSON.parse(localStorage.getItem('login'))
+        let userInfo = JSON.parse(localStorage.getItem('userInfo'))
         console.log("store",store)
+        // console.log("user",user.user)
         if(store && store.login){
         this.props.onRouteChange('home');
         this.setState({store:store})
+        this.props.loadUser(userInfo.user);
+        console.log("storeCollector",this.state.userData)
+        // this.props.loadUser(this.state.userData[0]);
         }
     }
-    componentDidMount() {
-       this.storeCollector()
+    async componentDidMount() {
+        console.log("componentDidMount")
+        await this.auth()
+       await this.storeCollector()
     }
     render(){
 

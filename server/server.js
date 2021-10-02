@@ -98,20 +98,16 @@ const db = knex({
   ////////////////// JWT Testing /////////////////
   
   app.get('/posts',authenticateToken, (req, res) =>{
-    console.log(req.user.email)
-    db.select('*').from('users').then(data => {
-      console.log('Users:', data);
-      const verify = (data.filter(post => post.email === req.user.email))
-      console.log(verify)
-      res.json(verify)
-    });
+    const verify = (posts.filter(post => post.username === req.user.name))
+    console.log(verify)
+    res.json(verify)
   })
   app.post('/login', (req, res) =>{
     //AUthenticate the user
     const username = req.body.username
     const user = { name: username }
     console.log("user", user)
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET)
+    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '15s'})
     res.json({accessToken: accessToken})
 
   })
@@ -170,7 +166,7 @@ app.post('/signin', (req, res) => {
     console.log(isValid);
     if(isValid){
       console.log("mail", mail)
-      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '50s'})
       console.log("access token generated",accessToken)
       return db.select('*').from('users')
           .where('email', '=', req.body.email)
