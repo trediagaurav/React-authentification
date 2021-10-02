@@ -41,8 +41,6 @@ class Signin extends React.Component {
     //When the submit sign In button is clicked
     onSubmitSignIn = () => {
 
-        //console.log(this.state);
-
         //Send request to our server 
         fetch('http://localhost:3001/signin', {
             method: 'post',
@@ -54,13 +52,9 @@ class Signin extends React.Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("sign In",data)
           if(data.user.id){
-              console.log('loadUser',data.user)
-              console.log(this.props.onRouteChange)
             this.props.loadUser(data.user);
             this.setState({userData:data.user})
-            console.log('username',this.state.userData)
           } else {
             this.setState({notRegister: 'You are not registered'});
           }
@@ -80,7 +74,6 @@ class Signin extends React.Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("from auth", data)
             if(data){
                 console.log("token received")
                 localStorage.setItem('login',JSON.stringify({
@@ -88,28 +81,36 @@ class Signin extends React.Component {
                     token:e,
                 }))
                 localStorage.setItem('userInfo',JSON.stringify({
-                    user:this.state.userData
+                    user:data[0]
                 }))                
                 this.props.onRouteChange('home');
             }
+            if (data.message) {
+                console.log("token expire")
+                localStorage.clear()
+                // this.props.onRouteChange('signin');
+            }
         })
     }
-    storeCollector = () =>{
+    storeCollector = (e) =>{
         let store = JSON.parse(localStorage.getItem('login'))
         let userInfo = JSON.parse(localStorage.getItem('userInfo'))
-        console.log("store",store)
+        if(store){
+            this.auth(store.token)
+        }       
         // console.log("user",user.user)
-        if(store && store.login){
-        this.props.onRouteChange('home');
-        this.setState({store:store})
-        this.props.loadUser(userInfo.user);
-        console.log("storeCollector",this.state.userData)
-        // this.props.loadUser(this.state.userData[0]);
+        if (userInfo && userInfo.user) { 
+            if(store && store.login){
+                this.props.onRouteChange('home');
+                this.setState({store:store})
+                this.props.loadUser(userInfo.user);
+                console.log("Not expired yet")
+                // this.props.loadUser(this.state.userData[0]);
+            }
         }
+        
     }
     async componentDidMount() {
-        console.log("componentDidMount")
-        await this.auth()
        await this.storeCollector()
     }
     render(){

@@ -102,6 +102,7 @@ const db = knex({
     console.log(verify)
     res.json(verify)
   })
+
   app.post('/login', (req, res) =>{
     //AUthenticate the user
     const username = req.body.username
@@ -120,7 +121,9 @@ const db = knex({
     if(token == null) return res.sendStatus(401)
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(err, user)=>{
-      if(err) return res.sendStatus(403)
+      if(err){
+         res.send({message:"Token expire"})
+      } 
       req.user = user
       console.log('req.user',req.user)
       next()
@@ -166,7 +169,7 @@ app.post('/signin', (req, res) => {
     console.log(isValid);
     if(isValid){
       console.log("mail", mail)
-      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '50s'})
+      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10h'})
       console.log("access token generated",accessToken)
       return db.select('*').from('users')
           .where('email', '=', req.body.email)
@@ -188,7 +191,7 @@ app.post('/authenticate',authenticateToken, (req, res) =>{
   db.select('*').from('users').then(data => {
     console.log('Users:', data);
     const verify = (data.filter(post => post.email === req.user.email))
-    console.log(verify)
+    console.log("authenticate verify",verify)
     res.json(verify)
   });
 })

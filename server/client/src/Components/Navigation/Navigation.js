@@ -2,7 +2,6 @@ import React from 'react';
 import Signin from "../Signin/Signin";
 //Recieve the onRouteChange Prop from App.js and isSignedIn
 const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
-        console.log('From navigation',loadUser)
         //If we are signedIn display the sign out navigation
         const signOut = () =>{
             console.log("click")
