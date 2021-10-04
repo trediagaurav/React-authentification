@@ -90,7 +90,7 @@ class App extends Component {
 
            : (   //else if route is Signin go to Signin
 
-             route === 'signin' ?
+             route === 'signin' || route === 'signout' ?
 
              <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
 
