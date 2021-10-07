@@ -1,0 +1,57 @@
+
+app.post('/register', (req, res) => {
+  console.log(req.body)
+  const { email, name, password } = req.body;
+  const hash = bcrypt.hashSync(password);
+  const mail = { email: email }
+  const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10h'})
+  console.log("access token generated",accessToken)
+  db.tr
+  db("login")
+  .insert({
+    email: email,
+    hash : hash
+  })
+  .returning('email')
+  .then(data => {
+    console.log("data", data)
+    const newData = ({
+      name: name,
+      email: data[0]
+    })
+    database(newData)
+    res.json({database:database});
+    })
+    
+    // return  trx('users')
+    //        .returning('*')
+    //        .insert({
+    //          email: data[0],
+    //          name: name,
+    //          joined: new Date()
+    //        })
+    //         .then(user => {
+    //           res.json(user[0]);
+    //         })
+    //      })
+})
+
+
+
+app.post('/register', (req, res) => {
+  console.log(req.body)
+  const { email, name, password } = req.body;
+  const hash = bcrypt.hashSync(password);
+  const mail = { email: email }
+  const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10h'})
+  console.log("access token generated",accessToken)
+  db("login")
+  .insert({
+    email: email,
+    hash : hash
+  })
+  .returning('email')
+  .then(data => {
+    console.log("data", data)
+  })
+})

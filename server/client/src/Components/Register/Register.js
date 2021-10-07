@@ -64,18 +64,18 @@ class Register extends React.Component {
             })
         })
         .then(response => response.json())
-        .then(user => {
+        .then(data => {
+            console.log(data)
+            // if (user.id) {
 
-            if (user.id) {
+            //     //Load new user
+            //     this.props.loadUser(user)
 
-                //Load new user
-                this.props.loadUser(user)
-
-                //Change the route to home
-                this.props.onRouteChange('home') 
-            } else {
-                this.setState({notRegister: 'Already registered'});
-              }
+            //     //Change the route to home
+            //     this.props.onRouteChange('home') 
+            // } else {
+            //     this.setState({notRegister: 'Already registered'});
+            //   }
         })
 
         
@@ -96,15 +96,15 @@ class Register extends React.Component {
                         <legend className="f1 fw6 ph0 mh0">Register</legend>
                         <div className="mt3">
                             <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
-                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="name" id="name"  placeholder="Enter name (max 8 characters)" required onChange={this.onNameChange} />
+                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="name" id="name"  placeholder="Enter name (max 8 characters)" required onChange={this.onNameChange} required/>
                         </div>
                         <div className="mt3">
                             <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address" id="email-address" placeholder="Enter your email" required onChange={this.onEmailChange} />
+                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address" id="email-address" placeholder="Enter your email" required onChange={this.onEmailChange} required/>
                         </div>
                         <div className="mv3">
                             <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                            <input className=" pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password" id="password" placeholder="Enter your password" required onChange={this.onPasswordChange} />
+                            <input className=" pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password" id="password" placeholder="Enter your password" required onChange={this.onPasswordChange} required/>
                         </div>
                         {/* <label className="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" /> Remember me</label> */}
                     </fieldset>

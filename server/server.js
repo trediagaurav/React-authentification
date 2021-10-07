@@ -199,44 +199,44 @@ app.post('/authenticate',authenticateToken, (req, res) =>{
 
 //Check input from the frontend register form with the data in the database, insert the data in the database
 app.post('/register', (req, res) => {
-      console.log(req.body)
-    //Destructure the request from the body
-    const { email, name, password } = req.body;
 
-    //Security in server
-    if(!email || !name || !password){
-      return res.status(400).json('incorrect form submission');
-    }
+  //Destructure the request from the body
+  const { email, name, password } = req.body;
 
-    //Bcrypt Hash
-    const hash = bcrypt.hashSync(password);
+  //Security in server
+  if(!email || !name || !password){
+    return res.status(400).json('incorrect form submission');
+  }
 
-    db.transaction(trx => {
-        trx.insert({
-          hash: hash,
-          email: email
-    
-        })
-         .into('login')
-         .returning('email')
-         .then(loginEmail => {
-           return  trx('users')
-           .returning('*')
-           .insert({
-             email: loginEmail[0],
-             name: name,
-             joined: new Date()
-           })
-            .then(user => {
-              res.json(user[0]);
-            })
-         })
-         .then(trx.commit)
-         .catch(trx.rollback)
+  //Bcrypt Hash
+  const hash = bcrypt.hashSync(password);
+
+  db.transaction(trx => {
+      trx.insert({
+        hash: hash,
+        email: email
+  
       })
-    
-    
-       .catch(err => res.status(400).json('unable to register'));
+       .into('login')
+       .returning('email')
+       .then(loginEmail => {
+         return  trx('users')
+         .returning('*')
+         .insert({
+           email: loginEmail[0],
+           name: name,
+           joined: new Date()
+         })
+          .then(user => {
+            res.json(user[0]);
+          })
+       })
+       .then(trx.commit)
+       .catch(trx.rollback)
+    })
+  
+  
+     .catch(err => res.status(400).json('unable to register'));
 })
 
 
