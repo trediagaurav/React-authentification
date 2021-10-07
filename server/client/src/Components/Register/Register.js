@@ -64,18 +64,18 @@ class Register extends React.Component {
             })
         })
         .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            // if (user.id) {
+        .then(user => {
+            console.log(user)
+            if (user.id) {
 
-            //     //Load new user
-            //     this.props.loadUser(user)
+                //Load new user
+                this.props.loadUser(user)
 
-            //     //Change the route to home
-            //     this.props.onRouteChange('home') 
-            // } else {
-            //     this.setState({notRegister: 'Already registered'});
-            //   }
+                //Change the route to home
+                this.props.onRouteChange('home') 
+            } else {
+                this.setState({notRegister: 'Already registered'});
+              }
         })
 
         
