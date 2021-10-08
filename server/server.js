@@ -228,8 +228,16 @@ app.post('/register', (req, res) => {
            joined: new Date()
          })
           .then(user => {
-            res.json(user[0]);
-          })
+            const userEmail =user[0]
+            console.log("userEmail:" ,userEmail)
+            const mail = { email: userEmail.email}
+            console.log("Email:" ,mail)
+            const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10h'})
+            // res.json(user[0]);
+            res.json({
+              accessToken: accessToken,
+              user: user[0]}) 
+            })
        })
        .then(trx.commit)
        .catch(trx.rollback)

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {Button} from 'react-bootstrap'
 import './Register.css';
 
 
@@ -23,7 +23,11 @@ class Register extends React.Component {
 
             name: '',
 
-            notRegister: ''
+            notRegister: '',
+
+            store:null,
+
+            userData:''
         }
     }
 
@@ -64,23 +68,74 @@ class Register extends React.Component {
             })
         })
         .then(response => response.json())
-        .then(user => {
-            console.log(user)
-            if (user.id) {
+        .then(data => {
+            console.log(data)
+            if (data.user.id) {
 
                 //Load new user
-                this.props.loadUser(user)
-
+                this.props.loadUser(data.user)
+                this.setState({userData:data.user})
                 //Change the route to home
-                this.props.onRouteChange('home') 
+                // this.props.onRouteChange('home') 
             } else {
                 this.setState({notRegister: 'Already registered'});
-              }
-        })
-
-        
+            }
+            if(data.accessToken){
+                this.auth(data.accessToken)
+            } 
+        })   
     }
 
+    auth = (e)=>{
+        fetch('http://localhost:3001/authenticate', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${e}`
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data){
+                console.log("token received")
+                localStorage.setItem('login',JSON.stringify({
+                    login:true,
+                    token:e,
+                }))
+                localStorage.setItem('userInfo',JSON.stringify({
+                    user:data[0]
+                }))                
+                this.props.onRouteChange('home');
+            }
+            if (data.message) {
+                console.log("token expire")
+                localStorage.clear()
+                // this.props.onRouteChange('signin');
+            }
+        })
+    }
+
+    storeCollector = (e) =>{
+        let store = JSON.parse(localStorage.getItem('login'))
+        let userInfo = JSON.parse(localStorage.getItem('userInfo'))
+        if(store){
+            this.auth(store.token)
+        }       
+        // console.log("user",user.user)
+        if (userInfo && userInfo.user) { 
+            if(store && store.login){
+                this.props.onRouteChange('home');
+                this.setState({store:store})
+                this.props.loadUser(userInfo.user);
+                console.log("Not expired yet")
+                // this.props.loadUser(this.state.userData[0]);
+            }
+        }    
+    }
+
+    async componentDidMount() {
+        await this.storeCollector()
+    }
 
     render(){
 
@@ -96,22 +151,23 @@ class Register extends React.Component {
                         <legend className="f1 fw6 ph0 mh0">Register</legend>
                         <div className="mt3">
                             <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
-                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="name" id="name"  placeholder="Enter name (max 8 characters)" required onChange={this.onNameChange} required/>
+                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="name" id="name"  placeholder="Enter name (max 8 characters)" required onChange={this.onNameChange} required autoComplete="off"/>
                         </div>
                         <div className="mt3">
                             <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address" id="email-address" placeholder="Enter your email" required onChange={this.onEmailChange} required/>
+                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address" id="email-address" placeholder="Enter your email" required onChange={this.onEmailChange} required autoComplete="off"/>
                         </div>
                         <div className="mv3">
                             <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                            <input className=" pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password" id="password" placeholder="Enter your password" required onChange={this.onPasswordChange} required/>
+                            <input className=" pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password" id="password" placeholder="Enter your password" required onChange={this.onPasswordChange} required autoComplete="off"/>
                         </div>
                         {/* <label className="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" /> Remember me</label> */}
                     </fieldset>
                     <div className="">
-                        <input onClick={ this.onSubmitSignIn } className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Register" disabled={(this.state.name === "" || this.state.name.length > 8 || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? true : false } />
+                        {/* <input onClick={ this.onSubmitSignIn } className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Register" disabled={(this.state.name === "" || this.state.name.length > 8 || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? true : false } /> */}
+                        <input onClick={ this.onSubmitSignIn } className="RegisterButton" type="submit" value="Register" disabled={(this.state.name === "" || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? true : false }/>
 
-                        {(this.state.name === "" || this.state.name.length > 8 || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? <div className="emptyInpMsg"><span>Incorrect Credentials</span></div> : null }
+                        {(this.state.name === "" || this.state.name.length > 8 || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? <div className="emptyInpMsg"><span>Fill all the Credentials</span></div> : null }
                         <div className="emptyInpMsg" ><span>{this.state.notRegister}</span></div>
 
                     </div>
