@@ -233,7 +233,6 @@ app.post('/register', (req, res) => {
             const mail = { email: userEmail.email}
             console.log("Email:" ,mail)
             const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10h'})
-            // res.json(user[0]);
             res.json({
               accessToken: accessToken,
               user: user[0]}) 
