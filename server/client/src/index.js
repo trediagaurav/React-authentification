@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'tachyons';
+// import {unregister} from'./Interceptor';
 
 ReactDOM.render(
   <React.StrictMode>

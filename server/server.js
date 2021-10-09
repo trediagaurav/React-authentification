@@ -169,7 +169,7 @@ app.post('/signin', (req, res) => {
     console.log(isValid);
     if(isValid){
       console.log("mail", mail)
-      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10h'})
+      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '15s'})
       console.log("access token generated",accessToken)
       return db.select('*').from('users')
           .where('email', '=', req.body.email)
@@ -232,7 +232,7 @@ app.post('/register', (req, res) => {
             console.log("userEmail:" ,userEmail)
             const mail = { email: userEmail.email}
             console.log("Email:" ,mail)
-            const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10h'})
+            const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '15s'})
             res.json({
               accessToken: accessToken,
               user: user[0]}) 
