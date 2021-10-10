@@ -69,21 +69,22 @@ const db = knex({
 
   ////////////////// JWT Testing /////////////////
   
-  app.get('/posts',authenticateToken, (req, res) =>{
-    const verify = (posts.filter(post => post.username === req.user.name))
-    console.log(verify)
-    res.json(verify)
-  })
+  // app.get('/posts',authenticateToken, (req, res) =>{
+  //   const verify = (posts.filter(post => post.username === req.user.name))
+  //   console.log(verify)
+  //   res.json(verify)
+  // })
 
-  app.post('/login', (req, res) =>{
-    //AUthenticate the user
-    const username = req.body.username
-    const user = { name: username }
-    console.log("user", user)
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '15s'})
-    res.json({accessToken: accessToken})
+  // app.post('/login', (req, res) =>{
+  //   //AUthenticate the user
+  //   console.log(req)
+  //   const username = req.body.username
+  //   const user = { name: username }
+  //   console.log("user", user)
+  //   const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '15s'})
+  //   res.json({accessToken: accessToken})
 
-  })
+  // })
 
   function authenticateToken(req, res, next){
     const authHeader = req.headers['authorization']
@@ -93,6 +94,7 @@ const db = knex({
     if(token == null) return res.sendStatus(401)
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(err, user)=>{
+      console.log("user in auth", user)
       if(err){
          res.send({message:"Token expire"})
       } 
@@ -126,7 +128,11 @@ const db = knex({
 //     res.send(database.users);
 // })
 
-
+app.post('/text',authenticateToken, (req, res) =>{
+  const authHeader = req.headers['authorization']
+    console.log("authHead of post:", authHeader)
+  res.send({message:"Text received"})
+})
 
 //Check the input from the frontend sign in from with the user data from the database
 app.post('/signin', (req, res) => {
@@ -141,7 +147,7 @@ app.post('/signin', (req, res) => {
     console.log(isValid);
     if(isValid){
       console.log("mail", mail)
-      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10h'})
+      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '40s'})
       console.log("access token generated",accessToken)
       return db.select('*').from('users')
           .where('email', '=', req.body.email)
@@ -204,7 +210,7 @@ app.post('/register', (req, res) => {
             console.log("userEmail:" ,userEmail)
             const mail = { email: userEmail.email}
             console.log("Email:" ,mail)
-            const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '10h'})
+            const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '15s'})
             res.json({
               accessToken: accessToken,
               user: user[0]}) 
