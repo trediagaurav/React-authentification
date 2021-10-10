@@ -4,6 +4,7 @@ import Register from "./Components/Register/Register";
 import Signin from "./Components/Signin/Signin";
 import Navigation from "./Components/Navigation/Navigation";
 import {unregister} from'./Interceptor';
+import Post from "./Components/Post";
 
 
 
@@ -86,9 +87,11 @@ class App extends Component {
 
                 <h1>DASHBOARD</h1>
                 <p>{this.state.user.name}</p>
-
+                <div>
+                  <Post onRouteChange={this.onRouteChange}/>
+                </div>  
              </div>
-
+           
            : (   //else if route is Signin go to Signin
 
              route === 'signin' || route === 'signout' ?

@@ -105,6 +105,7 @@ const db = knex({
 
   app.post('/login', (req, res) =>{
     //AUthenticate the user
+    console.log(req)
     const username = req.body.username
     const user = { name: username }
     console.log("user", user)
@@ -121,6 +122,7 @@ const db = knex({
     if(token == null) return res.sendStatus(401)
 
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(err, user)=>{
+      console.log("user in auth", user)
       if(err){
          res.send({message:"Token expire"})
       } 
@@ -154,7 +156,11 @@ const db = knex({
 //     res.send(database.users);
 // })
 
-
+app.post('/text',authenticateToken, (req, res) =>{
+  const authHeader = req.headers['authorization']
+    console.log("authHead of post:", authHeader)
+  res.send({message:"Text received"})
+})
 
 //Check the input from the frontend sign in from with the user data from the database
 app.post('/signin', (req, res) => {
@@ -169,7 +175,7 @@ app.post('/signin', (req, res) => {
     console.log(isValid);
     if(isValid){
       console.log("mail", mail)
-      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '15s'})
+      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '40s'})
       console.log("access token generated",accessToken)
       return db.select('*').from('users')
           .where('email', '=', req.body.email)

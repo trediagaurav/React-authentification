@@ -2,13 +2,14 @@ import fetchIntercept from 'fetch-intercept';
 
 export const unregister = fetchIntercept.register({
     request: function (url, config) {
-        setTimeout(function(){
-            console.log("config",config);
-            if (!config.headers.authorization) {
-                console.log("not has token")
-            }else return 
-        }, 5000);
-        
+
+        if(localStorage.getItem('login')){
+            let store = JSON.parse(localStorage.getItem('login'))
+            let token = store.token
+            console.log("store token",token)
+            config.headers.Authorization = `Bearer ${token}`
+        }
+        console.log("Config",config)
         console.log("Url",url)
         return [url, config];
     },
@@ -21,6 +22,9 @@ export const unregister = fetchIntercept.register({
     response: function (response) {
         // Modify the reponse object
         console.log(response)
+        if (response.message === 'Token expire') {
+           console.log('Its expire')
+        }
         return response;
     },
 
