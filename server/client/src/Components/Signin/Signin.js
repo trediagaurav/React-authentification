@@ -1,5 +1,6 @@
 import React from 'react';
-
+import axios from "axios";
+axios.defaults.withCredentials = true
 //Recieve the onRouteChange Prop from App.js
 class Signin extends React.Component {
 
@@ -44,7 +45,7 @@ class Signin extends React.Component {
         //console.log(this.state);
 
         //Send request to our server 
-        fetch('http://localhost:3001/signin', {
+        fetch('http://localhost:3001/signin',{withCredentials: true}, {
             method: 'post',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
@@ -53,17 +54,21 @@ class Signin extends React.Component {
             })
         })
         .then(response => response.json())
-        .then(user => {
-            // let loginName = user.name
-            // console.log(loginName)
-            this.setState({loginName:user.name})
-            console.log(this.state.loginName)
-          if(user.id){
-            this.props.loadUser(user);
-            this.props.onRouteChange('home');
-          } else {
-            this.setState({notRegister: 'You are not registered'});
-          }
+        .then(data => {
+            console.log("data from sign", data)
+            if(data.user){
+                let loginName = data.user.name
+                console.log(loginName)
+                this.setState({loginName:data.user.name})
+                console.log(this.state.loginName)
+                if(data.user.id){
+                    this.props.loadUser(data.user);
+                    this.props.onRouteChange('home');
+                } else {
+                    this.setState({notRegister: 'You are not registered'});
+                }
+            }            
+         
         })
 
         

@@ -135,11 +135,17 @@ const db = knex({
 
 
 //Root Route
-// app.get('/', (req, res) => {
-//     // res.send('this is working');
-//     //response with the users database
-//     res.send(database.users);
-// })
+app.get('/', (req, res) => {
+    // res.send('this is working');
+    //response with the users database
+    // res.send(database.users);
+    res.status(202).cookie('Name', 'Gaurav Tredia',{
+      sameSite:'strict',
+      path:'/',
+      expires: new Date(new Date().getTime() + 100 * 1000),
+      httpOnly: true
+    }).send("cookie been initialise")
+})
 
 app.post('/text', (req, res) =>{
   const authHeader = req.headers['authorization']
@@ -158,9 +164,15 @@ app.post('/signin', (req, res) => {
      return db.select('*').from('users')
       .where('email', '=', req.body.email)
       .then(user => {
-        req.session.user = user
-        console.log("req.session", req.session.user)
-        res.json(user[0])
+        // req.session.user = user
+        // console.log("req.session", req.session.user)
+        // res.json(user[0])
+        res.status(202).cookie('Name', 'Gaurav Tredia',{
+          sameSite:'strict',
+          path:'/',
+          expires: new Date(new Date().getTime() + 100 * 1000),
+          httpOnly: true
+        }).json({loggedIn: true, user:user[0] })
       })
        .catch(err => res.status(400).json('unable to get user'))
     } else {
