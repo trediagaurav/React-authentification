@@ -5,9 +5,11 @@ import Signin from "./Components/Signin/Signin";
 import Navigation from "./Components/Navigation/Navigation";
 import {unregister} from'./Interceptor';
 import Post from "./Components/Post";
+import axios from "axios";
 
 
 
+axios.defaults.withCredentials = true
 class App extends Component {
 
   constructor() {
@@ -68,6 +70,11 @@ class App extends Component {
     this.setState({route: route});
   }
 
+  // componentDidMount = () =>{
+  //   axios.get("http://localhost:3001/signin").then((response) =>{
+  //     console.log("app axios", response)
+  //   })
+  // }
   render() {
 
     //Destructuring our states instead of using this.state

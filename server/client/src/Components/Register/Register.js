@@ -55,7 +55,7 @@ class Register extends React.Component {
     //When the submit Register button is clicked
     onSubmitSignIn = () => {
 
-        console.log(this.state);
+        //console.log(this.state);
 
         //Send request to our server 
         fetch('http://localhost:3001/register', {
@@ -68,73 +68,21 @@ class Register extends React.Component {
             })
         })
         .then(response => response.json())
-        .then(data => {
-            console.log(data)
-            if (data.user.id) {
+        .then(user => {
+
+            if (user.id) {
 
                 //Load new user
-                this.props.loadUser(data.user)
-                this.setState({userData:data.user})
+                this.props.loadUser(user)
+
                 //Change the route to home
-                // this.props.onRouteChange('home') 
+                this.props.onRouteChange('home') 
             } else {
                 this.setState({notRegister: 'Already registered'});
-            }
-            if(data.accessToken){
-                this.auth(data.accessToken)
-            } 
-        })   
-    }
-
-    auth = (e)=>{
-        fetch('http://localhost:3001/authenticate', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'authorization': `Bearer ${e}`
-            },
+              }
         })
-        .then(response => response.json())
-        .then(data => {
-            if(data){
-                console.log("token received")
-                localStorage.setItem('login',JSON.stringify({
-                    login:true,
-                    token:e,
-                }))
-                localStorage.setItem('userInfo',JSON.stringify({
-                    user:data[0]
-                }))                
-                this.props.onRouteChange('home');
-            }
-            if (data.message) {
-                console.log("token expire")
-                localStorage.clear()
-                // this.props.onRouteChange('signin');
-            }
-        })
-    }
 
-    storeCollector = (e) =>{
-        let store = JSON.parse(localStorage.getItem('login'))
-        let userInfo = JSON.parse(localStorage.getItem('userInfo'))
-        if(store){
-            this.auth(store.token)
-        }       
-        // console.log("user",user.user)
-        if (userInfo && userInfo.user) { 
-            if(store && store.login){
-                this.props.onRouteChange('home');
-                this.setState({store:store})
-                this.props.loadUser(userInfo.user);
-                console.log("Not expired yet")
-                // this.props.loadUser(this.state.userData[0]);
-            }
-        }    
-    }
-
-    async componentDidMount() {
-        await this.storeCollector()
+        
     }
 
     render(){

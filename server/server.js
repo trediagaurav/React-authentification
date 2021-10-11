@@ -13,6 +13,7 @@ Routes:
 
 */
 require('dotenv').config()
+
 const express = require('express');
 
 const bodyParser = require('body-parser');
@@ -35,11 +36,17 @@ app.use(express.json())
 
 app.use(express.static(__dirname + '/client/src/'));
 
-app.use(bodyParser.json());
-
-app.use(cors());
-
+// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+
+app.use(cors({
+  origin: ["http://localhost:3000"],
+  methods: ["GET", "POST"],
+  credentials: true
+}));
+
+
 
 const posts = [
   {
@@ -51,17 +58,18 @@ const posts = [
     title: "JWT"
   }
 ]
-// app.use(
-//   session({
-//     key: 'user_sid',
-//     secret: 'some_secret_key',
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: {
-//         expires: 300000
-//     }
-//   })
-// );
+
+app.use(
+  session({
+    key: 'user_sid',
+    secret: 'some_secret_key',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 300000
+    }
+  })
+);
 
 // app.use((req, res, next) => {
 //   console.log(req.session)
@@ -97,7 +105,7 @@ const db = knex({
 
   ////////////////// JWT Testing /////////////////
   
-  app.get('/posts',authenticateToken, (req, res) =>{
+  app.get('/posts', (req, res) =>{
     const verify = (posts.filter(post => post.username === req.user.name))
     console.log(verify)
     res.json(verify)
@@ -113,28 +121,6 @@ const db = knex({
     res.json({accessToken: accessToken})
 
   })
-
-  function authenticateToken(req, res, next){
-    const authHeader = req.headers['authorization']
-    console.log("authHead:", authHeader)
-    const token = authHeader && authHeader.split(" ")[1]
-    console.log("token:", token)
-    if(token == null) return res.sendStatus(401)
-
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(err, user)=>{
-      console.log("user in auth", user)
-      if(err){
-         res.send({message:"Token expire"})
-      } 
-      req.user = user
-      console.log('req.user',req.user)
-      next()
-    })
-  }
-
-
-
-
 
 
 /////////////////////////////////////////////
@@ -156,7 +142,7 @@ const db = knex({
 //     res.send(database.users);
 // })
 
-app.post('/text',authenticateToken, (req, res) =>{
+app.post('/text', (req, res) =>{
   const authHeader = req.headers['authorization']
     console.log("authHead of post:", authHeader)
   res.send({message:"Text received"})
@@ -164,44 +150,34 @@ app.post('/text',authenticateToken, (req, res) =>{
 
 //Check the input from the frontend sign in from with the user data from the database
 app.post('/signin', (req, res) => {
-  const userEmail = req.body.email
-  const mail = { email: userEmail }
-  console.log(req.body)
   db.select('email', 'hash').from('login')
   .where('email', '=', req.body.email)
-  .then(data =>{
-    console.log("after sign in",data)
+  .then(data => {
     const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
-    console.log(isValid);
+    // console.log(isValid);
     if(isValid){
-      console.log("mail", mail)
-      const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '40s'})
-      console.log("access token generated",accessToken)
-      return db.select('*').from('users')
-          .where('email', '=', req.body.email)
-          .then(user => {
-            res.json({
-              accessToken: accessToken,
-              user: user[0]}) 
-            })
-           .catch(err => res.status(400).json('unable to get user'))
-        } else {
-          res.status(400).json("wrong credentials")
-        }
+     return db.select('*').from('users')
+      .where('email', '=', req.body.email)
+      .then(user => {
+        req.session.user = user
+        console.log("req.session", req.session.user)
+        res.json(user[0])
       })
-       .catch(err => res.status(400).json('wrong credentials'))
+       .catch(err => res.status(400).json('unable to get user'))
+    } else {
+      res.status(400).json("wrong credentials")
+    }
+  })
+   .catch(err => res.status(400).json('wrong credentials'))
 })
 
-app.post('/authenticate',authenticateToken, (req, res) =>{
-  console.log(req.body)
-  db.select('*').from('users').then(data => {
-    console.log('Users:', data);
-    const verify = (data.filter(post => post.email === req.user.email))
-    console.log("authenticate verify",verify)
-    res.json(verify)
-  });
+app.get("/signin",(req, res) =>{
+  if(req.session.user){
+    res.send({loggedIn: true, user: req.session.user})
+  }else{
+    res.send({loggedIn: false})
+  }
 })
-
 
 //Check input from the frontend register form with the data in the database, insert the data in the database
 app.post('/register', (req, res) => {
@@ -234,15 +210,8 @@ app.post('/register', (req, res) => {
            joined: new Date()
          })
           .then(user => {
-            const userEmail =user[0]
-            console.log("userEmail:" ,userEmail)
-            const mail = { email: userEmail.email}
-            console.log("Email:" ,mail)
-            const accessToken = jwt.sign(mail, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '15s'})
-            res.json({
-              accessToken: accessToken,
-              user: user[0]}) 
-            })
+            res.json(user[0]);
+          })
        })
        .then(trx.commit)
        .catch(trx.rollback)
