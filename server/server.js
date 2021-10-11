@@ -70,7 +70,6 @@ app.use(
     }
   })
 );
-
 // app.use((req, res, next) => {
 //   console.log(req.session)
 //   if (req.cookies.user_sid && !req.session.user) {
