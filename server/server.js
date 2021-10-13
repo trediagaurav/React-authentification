@@ -64,9 +64,10 @@ app.use(
     key: 'user_sid',
     secret: 'some_secret_key',
     resave: false,
-    saveUninitialized: false,
+    saveUninitialized: true,
     cookie: {
-        expires: 300000
+        expires: 300000,
+        httpOnly:true
     }
   })
 );
@@ -139,17 +140,12 @@ app.get('/', (req, res) => {
     // res.send('this is working');
     //response with the users database
     // res.send(database.users);
-    res.status(202).cookie('Name', 'Gaurav Tredia',{
-      sameSite:'strict',
-      path:'/',
-      expires: new Date(new Date().getTime() + 100 * 1000),
-      httpOnly: true
-    }).send("cookie been initialise")
+   res.send("working")
 })
 
 app.post('/text', (req, res) =>{
-  const authHeader = req.headers['authorization']
-    console.log("authHead of post:", authHeader)
+  // const authHeader = req.headers['authorization']
+  //   console.log("authHead of post:", authHeader)
   res.send({message:"Text received"})
 })
 
@@ -164,15 +160,11 @@ app.post('/signin', (req, res) => {
      return db.select('*').from('users')
       .where('email', '=', req.body.email)
       .then(user => {
-        // req.session.user = user
-        // console.log("req.session", req.session.user)
+        console.log(user[0])
+        req.session.user = user
+        console.log("req.session", req.session.user)
         // res.json(user[0])
-        res.status(202).cookie('Name', 'Gaurav Tredia',{
-          sameSite:'strict',
-          path:'/',
-          expires: new Date(new Date().getTime() + 100 * 1000),
-          httpOnly: true
-        }).json({loggedIn: true, user:user[0] })
+        res.json({loggedIn: true, user:user[0] })
       })
        .catch(err => res.status(400).json('unable to get user'))
     } else {
@@ -183,11 +175,11 @@ app.post('/signin', (req, res) => {
 })
 
 app.get("/signin",(req, res) =>{
-  if(req.session.user){
-    res.send({loggedIn: true, user: req.session.user})
-  }else{
-    res.send({loggedIn: false})
-  }
+  // if(req.session.user){
+  //   res.send({loggedIn: true, user: req.session.user})
+  // }else{
+  //   res.send({loggedIn: false})
+  // }
 })
 
 //Check input from the frontend register form with the data in the database, insert the data in the database
