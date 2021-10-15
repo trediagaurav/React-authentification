@@ -1,6 +1,4 @@
-import cookieParser from 'cookie-parser';
 import React from 'react';
-import axios from "axios";
 import Signin from "../Signin/Signin";
 //Recieve the onRouteChange Prop from App.js and isSignedIn
 const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
@@ -8,11 +6,7 @@ const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
         const signOut = () =>{
             console.log("click")
             onRouteChange('signout')
-            // localStorage.clear()
-            
-            axios.get("http://localhost:3001/logout", {withCredentials: true}).then((response) =>{
-                console.log("Logout", response)
-            })
+            localStorage.clear()
         }
 
         if (isSignedIn) {

@@ -16,6 +16,7 @@ export default class Post extends Component {
         console.log(this.state.textarea)
         fetch('http://localhost:3001/text', {
             method: 'post',
+            credentials:'include',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                text: this.state.textarea

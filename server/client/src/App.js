@@ -74,6 +74,9 @@ class App extends Component {
   componentDidMount = () =>{
     axios.get("http://localhost:3001/", {withCredentials: true}).then((response) =>{
       console.log("app axios", response)
+      if (response.data.loggedIn) {
+        this.onRouteChange ('home')
+      }
     })
   }
   render() {

@@ -47,6 +47,7 @@ class Signin extends React.Component {
         //Send request to our server 
         fetch('http://localhost:3001/signin', {
             method: 'post',
+            credentials:'include',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 email: this.state.signInEmail,

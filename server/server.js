@@ -38,6 +38,7 @@ app.use(express.static(__dirname + '/client/src/'));
 
 // app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+
 app.use(cookieParser());
 
 app.use(cors({
@@ -71,13 +72,14 @@ app.use(
     }
   })
 );
-// app.use((req, res, next) => {
-//   console.log(req.session)
-//   if (req.cookies.user_sid && !req.session.user) {
-//       res.clearCookie('user_sid');
-//   }
-//   next();
-// });
+app.use((req, res, next) => {
+  console.log('Cookies.User_sid', req.cookies.user_sid)
+  console.log('sesion.user', req.session.user)
+  // if (req.cookies.user_sid && !req.session.user) {
+  //     res.clearCookie('user_sid');
+  // }
+  next();
+});
 
 // const sessionChecker = (req, res, next) => {
 //   if (req.session.user && req.cookies.user_sid) {
@@ -87,6 +89,15 @@ app.use(
 //   }
 // };
 
+const sessionChecker = (req, res, next) => {
+  if (req.session.user && req.cookies.user_sid) {
+      console.log('sessionUser', req.session.user)
+      console.log('CookieUser', req.cookies.user_sid)
+      next();
+  } else {
+      next();
+  }
+};
 
 //CONNECT TO LOCAL POSTGRESQL DATABASE
 const db = knex({
@@ -137,13 +148,20 @@ const db = knex({
 
 //Root Route
 app.get('/', (req, res) => {
+  if(req.cookies.user_sid){
+    console.log('Cookies.User_sid', req.cookies.user_sid)
+  }
+  if(req.session.user){
+    console.log('sesion.user', req.session.user)
+    res.send({loggedIn:true, sessionUser:req.session.user[0]})
+  }
     // res.send('this is working');
     //response with the users database
     // res.send(database.users);
-   res.send("working")
+  //  res.send("working")
 })
 
-app.post('/text', (req, res) =>{
+app.post('/text',sessionChecker, (req, res) =>{
   // const authHeader = req.headers['authorization']
   //   console.log("authHead of post:", authHeader)
   res.send({message:"Text received"})
@@ -160,9 +178,8 @@ app.post('/signin', (req, res) => {
      return db.select('*').from('users')
       .where('email', '=', req.body.email)
       .then(user => {
-        console.log(user[0])
         req.session.user = user
-        console.log("req.session", req.session.user)
+        // console.log("req.session", req.session.user)
         // res.json(user[0])
         res.json({loggedIn: true, user:user[0] })
       })
@@ -224,7 +241,10 @@ app.post('/register', (req, res) => {
      .catch(err => res.status(400).json('unable to register'));
 })
 
-
+app.get('/logout', (req, res) => {
+  res.clearCookie('user_sid');
+  res.send({loggedOut:true});
+})
 
 
 //Profile params Route
