@@ -23,6 +23,7 @@ export const unregister = fetchIntercept.register({
         // Modify the reponse object
         console.log(response)
         if (response.message === 'Token expire') {
+            localStorage.clear()
            console.log('Its expire')
         }
         return response;

@@ -25,7 +25,7 @@ export default class Post extends Component {
         .then(data => {
             console.log(data)
             if (data.message === 'Token expire') {
-                localStorage.clear()
+                // localStorage.clear()
                 this.props.onRouteChange('signout');
              }
         })        
