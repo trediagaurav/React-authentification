@@ -75,7 +75,7 @@ class Signin extends React.Component {
         .then(response => response.json())
         .then(data => {
             if(data){
-                console.log("token received")
+                console.log("token received", data)
                 localStorage.setItem('login',JSON.stringify({
                     login:true,
                     token:e,
@@ -85,34 +85,13 @@ class Signin extends React.Component {
                 }))                
                 this.props.onRouteChange('home');
             }
-            if (data.message) {
+            if (data.loggedIn === false) {
                 console.log("token expire")
                 localStorage.clear()
-                // this.props.onRouteChange('signin');
             }
         })
     }
-    storeCollector = (e) =>{
-        let store = JSON.parse(localStorage.getItem('login'))
-        let userInfo = JSON.parse(localStorage.getItem('userInfo'))
-        if(store){
-            this.auth(store.token)
-        }       
-        // console.log("user",user.user)
-        if (userInfo && userInfo.user) { 
-            if(store && store.login){
-                this.props.onRouteChange('home');
-                this.setState({store:store})
-                this.props.loadUser(userInfo.user);
-                console.log("Not expired yet")
-                // this.props.loadUser(this.state.userData[0]);
-            }
-        }
-        
-    }
-    // async componentDidMount() {
-    //    await this.storeCollector()
-    // }
+    
     render(){
 
         const { onRouteChange } = this.props
@@ -127,7 +106,7 @@ class Signin extends React.Component {
                         <legend className="f1 fw6 ph0 mh0">Sign In</legend>
                         <div className="mt3">
                             <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address" id="email-address" placeholder="Enter your email" onChange={this.onEmailChange} onKeyPress={event => {
+                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="email" name="email-address" id="email-address" placeholder="Enter your email" onChange={this.onEmailChange} onKeyPress={event => {
                             if (event.key === 'Enter' && event.target.value.trim() > 0) {
                               this.onSubmitSignIn()
                             }
@@ -135,7 +114,7 @@ class Signin extends React.Component {
                         </div>
                         <div className="mv3">
                             <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                            <input className=" pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password" id="password" placeholder="Enter your password" onChange={this.onPasswordChange} onKeyPress={event => {
+                            <input className=" pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="password" name="password" id="password" placeholder="Enter your password" onChange={this.onPasswordChange} onKeyPress={event => {
                              if (event.key === 'Enter' && event.target.value.trim() > 0) {
                                this.onSubmitSignIn()
                                }

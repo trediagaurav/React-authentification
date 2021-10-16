@@ -69,7 +69,6 @@ class App extends Component {
   }
   
   auth = () => {
-    console.log(this.state.textarea)
     fetch('http://localhost:3001/', {
         method: 'post',
         headers: {'Content-Type': 'application/json'}
@@ -78,6 +77,9 @@ class App extends Component {
     .then(data => {
         if (data.loggedIn === true) {
           this.onRouteChange('home')
+        }else{
+          this.onRouteChange('signout')
+          localStorage.clear()
         }
     })        
 }

@@ -41,44 +41,6 @@ app.use(cors());
 
 app.use(cookieParser());
 
-const posts = [
-  {
-    username: 'Gaurav',
-    title: "session"
-  },
-  {
-    username: "Ramya",
-    title: "JWT"
-  }
-]
-// app.use(
-//   session({
-//     key: 'user_sid',
-//     secret: 'some_secret_key',
-//     resave: false,
-//     saveUninitialized: false,
-//     cookie: {
-//         expires: 300000
-//     }
-//   })
-// );
-
-// app.use((req, res, next) => {
-//   console.log(req.session)
-//   if (req.cookies.user_sid && !req.session.user) {
-//       res.clearCookie('user_sid');
-//   }
-//   next();
-// });
-
-// const sessionChecker = (req, res, next) => {
-//   if (req.session.user && req.cookies.user_sid) {
-//       res.redirect('/signin');
-//   } else {
-//       next();
-//   }
-// };
-
 
 //CONNECT TO LOCAL POSTGRESQL DATABASE
 const db = knex({
@@ -97,23 +59,6 @@ const db = knex({
 
   ////////////////// JWT Testing /////////////////
   
-  app.get('/posts',authenticateToken, (req, res) =>{
-    const verify = (posts.filter(post => post.username === req.user.name))
-    console.log(verify)
-    res.json(verify)
-  })
-
-  app.post('/login', (req, res) =>{
-    //AUthenticate the user
-    console.log(req)
-    const username = req.body.username
-    const user = { name: username }
-    console.log("user", user)
-    const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET,{expiresIn: '15s'})
-    res.json({accessToken: accessToken})
-
-  })
-
   function authenticateToken(req, res, next){
     const authHeader = req.headers['authorization']
     console.log("authHead:", authHeader)
@@ -124,7 +69,8 @@ const db = knex({
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET,(err, user)=>{
       console.log("user in auth", user)
       if(err){
-         res.send({message:"Token expire"})
+         res.json({loggedIn: false})
+         localStorage.clear()
       } 
       req.user = user
       console.log('req.user',req.user)
@@ -150,6 +96,17 @@ const db = knex({
 
 
 //Root Route
+
+app.post('/authenticate',authenticateToken, (req, res) =>{
+  console.log(req.body)
+  db.select('*').from('users').then(data => {
+    console.log('Users:', data);
+    const verify = (data.filter(post => post.email === req.user.email))
+    console.log("authenticate verify",verify)
+    res.json(verify)
+  });
+})
+
 app.post('/',authenticateToken, (req, res) => {
   console.log("simple post request")
     // res.send('this is working');
@@ -191,16 +148,6 @@ app.post('/signin', (req, res) => {
         }
       })
        .catch(err => res.status(400).json('wrong credentials'))
-})
-
-app.post('/authenticate',authenticateToken, (req, res) =>{
-  console.log(req.body)
-  db.select('*').from('users').then(data => {
-    console.log('Users:', data);
-    const verify = (data.filter(post => post.email === req.user.email))
-    console.log("authenticate verify",verify)
-    res.json(verify)
-  });
 })
 
 

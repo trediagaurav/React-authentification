@@ -75,8 +75,6 @@ class Register extends React.Component {
                 //Load new user
                 this.props.loadUser(data.user)
                 this.setState({userData:data.user})
-                //Change the route to home
-                // this.props.onRouteChange('home') 
             } else {
                 this.setState({notRegister: 'Already registered'});
             }
@@ -107,35 +105,12 @@ class Register extends React.Component {
                 }))                
                 this.props.onRouteChange('home');
             }
-            if (data.message) {
+            if (data.loggedIn === false) {
                 console.log("token expire")
                 localStorage.clear()
-                // this.props.onRouteChange('signin');
             }
         })
     }
-
-    storeCollector = (e) =>{
-        let store = JSON.parse(localStorage.getItem('login'))
-        let userInfo = JSON.parse(localStorage.getItem('userInfo'))
-        if(store){
-            this.auth(store.token)
-        }       
-        // console.log("user",user.user)
-        if (userInfo && userInfo.user) { 
-            if(store && store.login){
-                this.props.onRouteChange('home');
-                this.setState({store:store})
-                this.props.loadUser(userInfo.user);
-                console.log("Not expired yet")
-                // this.props.loadUser(this.state.userData[0]);
-            }
-        }    
-    }
-
-    // async componentDidMount() {
-    //     await this.storeCollector()
-    // }
 
     render(){
 
@@ -151,15 +126,15 @@ class Register extends React.Component {
                         <legend className="f1 fw6 ph0 mh0">Register</legend>
                         <div className="mt3">
                             <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
-                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="text" name="name" id="name"  placeholder="Enter name (max 8 characters)" required onChange={this.onNameChange} required autoComplete="off"/>
+                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="text" name="name" id="name"  placeholder="Enter name (max 8 characters)" required onChange={this.onNameChange} required autoComplete="off"/>
                         </div>
                         <div className="mt3">
                             <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="email" name="email-address" id="email-address" placeholder="Enter your email" required onChange={this.onEmailChange} required autoComplete="off"/>
+                            <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="email" name="email-address" id="email-address" placeholder="Enter your email" required onChange={this.onEmailChange} required autoComplete="off"/>
                         </div>
                         <div className="mv3">
                             <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                            <input className=" pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" type="password" name="password" id="password" placeholder="Enter your password" required onChange={this.onPasswordChange} required autoComplete="off"/>
+                            <input className=" pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="password" name="password" id="password" placeholder="Enter your password" required onChange={this.onPasswordChange} required autoComplete="off"/>
                         </div>
                         {/* <label className="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" /> Remember me</label> */}
                     </fieldset>
