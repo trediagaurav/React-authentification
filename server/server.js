@@ -111,7 +111,7 @@ app.get('/', (req, res) => {
   }
   if(req.session.user){
     console.log('sesion.user', req.session.user)
-    res.send({loggedIn:true, sessionUser:req.session.user[0]})
+    res.json({loggedIn:true, sessionUser:req.session})
   }
 })
 
