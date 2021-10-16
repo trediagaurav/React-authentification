@@ -16,7 +16,6 @@ export default class Post extends Component {
         console.log(this.state.textarea)
         fetch('http://localhost:3001/text', {
             method: 'post',
-            credentials:'include',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                text: this.state.textarea
@@ -25,7 +24,8 @@ export default class Post extends Component {
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            if (data.loggedIn === false) {
+            if (data.message === 'Token expire') {
+                localStorage.clear()
                 this.props.onRouteChange('signout');
              }
         })        
