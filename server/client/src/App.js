@@ -67,7 +67,24 @@ class App extends Component {
 
     this.setState({route: route});
   }
-
+  
+  auth = () => {
+    console.log(this.state.textarea)
+    fetch('http://localhost:3001/', {
+        method: 'post',
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.loggedIn === true) {
+          this.onRouteChange('home')
+        }
+    })        
+}
+  async componentDidMount() {
+    this.auth()
+    console.log("refresh from app.js")
+ }
   render() {
 
     //Destructuring our states instead of using this.state

@@ -110,9 +110,9 @@ class Signin extends React.Component {
         }
         
     }
-    async componentDidMount() {
-       await this.storeCollector()
-    }
+    // async componentDidMount() {
+    //    await this.storeCollector()
+    // }
     render(){
 
         const { onRouteChange } = this.props

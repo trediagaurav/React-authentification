@@ -133,9 +133,9 @@ class Register extends React.Component {
         }    
     }
 
-    async componentDidMount() {
-        await this.storeCollector()
-    }
+    // async componentDidMount() {
+    //     await this.storeCollector()
+    // }
 
     render(){
 

@@ -150,11 +150,12 @@ const db = knex({
 
 
 //Root Route
-// app.get('/', (req, res) => {
-//     // res.send('this is working');
-//     //response with the users database
-//     res.send(database.users);
-// })
+app.post('/',authenticateToken, (req, res) => {
+  console.log("simple post request")
+    // res.send('this is working');
+    //response with the users database
+    res.json({loggedIn:true})
+})
 
 app.post('/text',authenticateToken, (req, res) =>{
   const authHeader = req.headers['authorization']
