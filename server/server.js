@@ -96,7 +96,6 @@ const db = knex({
 
 
 //Root Route
-
 app.post('/authenticate',authenticateToken, (req, res) =>{
   console.log(req.body)
   db.select('*').from('users').then(data => {
