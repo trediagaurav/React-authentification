@@ -3,7 +3,6 @@ import "./App.css";
 import Register from "./Components/Register/Register";
 import Signin from "./Components/Signin/Signin";
 import Navigation from "./Components/Navigation/Navigation";
-import {unregister} from'./Interceptor';
 import Post from "./Components/Post";
 import axios from "axios";
 
