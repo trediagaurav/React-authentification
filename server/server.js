@@ -130,7 +130,7 @@ app.post('/signin', (req, res) => {
      return db.select('*').from('users')
       .where('email', '=', req.body.email)
       .then(user => {
-        req.session.user = user
+        req.session.user = user[0]
         res.json({loggedIn: true, user:user[0] })
       })
        .catch(err => res.status(400).json('unable to get user'))
@@ -172,7 +172,8 @@ app.post('/register', (req, res) => {
            joined: new Date()
          })
           .then(user => {
-            res.json(user[0]);
+            req.session.user = user[0]
+            res.json({loggedIn: true, user:user[0] })
           })
        })
        .then(trx.commit)
