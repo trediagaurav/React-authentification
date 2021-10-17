@@ -234,19 +234,9 @@ app.post('/forgetpassword', (req, res) => {
         console.log("click on mail send funct")
         if (err) {
           console.log('error occurs', err)
-        }else {
-          console.log('Email send')
-          res.send({message:"Mail send"})  
-        }
+        } 
       })
-    
-    //  return db.select('*').from('users')
-    //   .where('email', '=', req.body.email)
-    //   .then(user => {
-    //     req.session.user = user[0]
-    //     res.json({loggedIn: true, user:user[0] })
-    //   })
-    //    .catch(err => res.status(400).json('unable to get user'))
+      res.json({mailSend : true}) 
     } else {
       res.status(400).json("wrong Email")
     }

@@ -6,6 +6,7 @@ import Navigation from "./Components/Navigation/Navigation";
 import Post from "./Components/Post";
 import axios from "axios";
 import ForgetPassword from "./Components/ForgetPassword/ForgetPassword";
+import Otp from "./Components/ForgetPassword/Otp";
 
 
 
@@ -109,14 +110,19 @@ class App extends Component {
              route === 'signin' || route === 'signout' ?
 
              <Signin loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
-             :
+           :
 
              //else return the route to Register
              route === 'forgotPassword' ?
              <ForgetPassword loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
 
            :
-            
+
+           //else return the route to Register
+           route === 'otp' ?
+           <Otp loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+
+         :
              //else return the route to Register
 
              <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
