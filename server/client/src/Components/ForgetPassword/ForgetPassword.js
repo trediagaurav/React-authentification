@@ -31,32 +31,30 @@ export default class ForgetPassword extends Component {
 
         console.log(this.state.signInEmail);
 
-        //Send request to our server 
-        // fetch('http://localhost:3001/signin', {
-        //     method: 'post',
-        //     credentials:'include',
-        //     headers: {'Content-Type': 'application/json'},
-        //     body: JSON.stringify({
-        //         email: this.state.signInEmail
-        //     })
-        // })
-        // .then(response => response.json())
-        // .then(data => {
-        //     console.log("data from sign", data)
-        //     if(data.user){
-        //         let loginName = data.user.name
-        //         console.log(loginName)
-        //         this.setState({loginName:data.user.name})
-        //         console.log(this.state.loginName)
-        //         if(data.user.id){
-        //             this.props.loadUser(data.user);
-        //             this.props.onRouteChange('home');
-        //         } else {
-        //             this.setState({notRegister: 'You are not registered'});
-        //         }
-        //     }            
+        fetch('http://localhost:3001/forgetpassword', {
+            method: 'post',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: this.state.signInEmail
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("data from sign", data)
+            // if(data.user){
+            //     let loginName = data.user.name
+            //     console.log(loginName)
+            //     this.setState({loginName:data.user.name})
+            //     console.log(this.state.loginName)
+            //     if(data.user.id){
+            //         this.props.loadUser(data.user);
+            //         this.props.onRouteChange('home');
+            //     } else {
+            //         this.setState({notRegister: 'You are not registered'});
+            //     }
+            // }            
          
-        // })
+        })
 
         
     }

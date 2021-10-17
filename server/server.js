@@ -184,6 +184,27 @@ app.post('/register', (req, res) => {
      .catch(err => res.status(400).json('unable to register'));
 })
 
+app.post('/forgetpassword', (req, res) => {
+  db.select('email').from('login')
+  .where('email', '=', req.body.email)
+  .then(data => {
+    console.log("forgot password", data)
+    // console.log(isValid);
+    if(data[0].email === req.body.email){
+      res.send({message:'Email exists'})
+    //  return db.select('*').from('users')
+    //   .where('email', '=', req.body.email)
+    //   .then(user => {
+    //     req.session.user = user[0]
+    //     res.json({loggedIn: true, user:user[0] })
+    //   })
+    //    .catch(err => res.status(400).json('unable to get user'))
+    } else {
+      res.status(400).json("wrong Email")
+    }
+  })
+   .catch(err => res.status(400).json('wrong Email'))
+})
 app.get('/logout', (req, res) => {
   res.clearCookie('user_sid');
   res.send({loggedOut:true});
