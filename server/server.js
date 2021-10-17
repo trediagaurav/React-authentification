@@ -30,6 +30,8 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
+const nodemailer = require('nodemailer');
+
 const jwt = require('jsonwebtoken');
 
 app.use(express.json())
@@ -51,7 +53,7 @@ app.use(cors({
 app.use(
   session({
     key: 'user_sid',
-    secret: 'some_secret_key',
+    secret: process.env.ACCESS_TOKEN_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -76,6 +78,33 @@ const sessionChecker = (req, res, next) => {
     res.json({loggedIn: false})
   }
 };
+
+// Sending Mail
+
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
+  }
+});
+
+// let mailOptions = {
+//   from: process.env.EMAIL,
+//   to:'tredia.gaurav@gmail.com',
+//   subject: 'Testing and testing already',
+//   text:'Its working'
+// };
+
+// transporter.sendMail(mailOptions, function(){
+//   if (err) {
+//     console.log('error occurs', err)
+//   }else {
+//     console.log('emael send !!!')
+//   }
+// })
+
+
 
 //CONNECT TO LOCAL POSTGRESQL DATABASE
 const db = knex({
@@ -191,7 +220,26 @@ app.post('/forgetpassword', (req, res) => {
     console.log("forgot password", data)
     // console.log(isValid);
     if(data[0].email === req.body.email){
-      res.send({message:'Email exists'})
+      let userMail = data[0].email
+      let otp = Math.floor((Math.random()*10000)+1)
+      console.log(otp)
+      // res.json({otp:otp})
+      let mailOptions = {
+        from: process.env.EMAIL,
+        to: userMail,
+        subject: 'OTP for change password',
+        text:`Given Otp for the new password ${otp}`
+      };
+      transporter.sendMail(mailOptions, function(){
+        console.log("click on mail send funct")
+        if (err) {
+          console.log('error occurs', err)
+        }else {
+          console.log('Email send')
+          res.send({message:"Mail send"})  
+        }
+      })
+    
     //  return db.select('*').from('users')
     //   .where('email', '=', req.body.email)
     //   .then(user => {
