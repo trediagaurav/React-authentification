@@ -65,6 +65,7 @@ app.use(
 app.use((req, res, next) => {
   console.log('Cookies.User_sid', req.cookies.user_sid)
   console.log('sesion.user', req.session.user)
+  console.log('sesion.OTP 68', req.session.OTP)
   if (req.cookies.user_sid && !req.session.user) {
       res.clearCookie('user_sid');
   }
@@ -76,6 +77,15 @@ const sessionChecker = (req, res, next) => {
       next();
   } else {
     res.json({loggedIn: false})
+  }
+};
+
+const otpChecker = (req, res, next) => {
+  if (req.session.OTP  && req.cookies.user_sid) {
+    console.log("opt checker pass")
+      next();
+  } else {
+    res.json({otp: false})
   }
 };
 
@@ -139,8 +149,12 @@ app.get('/', (req, res) => {
     console.log('Cookies.User_sid', req.cookies.user_sid)
   }
   if(req.session.user){
-    console.log('sesion.user', req.session.user)
+    console.log('session.user', req.session.user)
     res.json({loggedIn:true, sessionUser:req.session})
+  }
+  if(req.session.OTP){
+    console.log('session.otp', req.session.OTP)
+    res.json({otp:true, sessionOtp:req.session})
   }
 })
 
@@ -222,7 +236,9 @@ app.post('/forgetpassword', (req, res) => {
     if(data[0].email === req.body.email){
       let userMail = data[0].email
       let otp = Math.floor((Math.random()*10000)+1)
+      let Otpdata = ({mail: userMail, otp: otp})
       console.log(otp)
+      req.session.OTP = Otpdata
       // res.json({otp:otp})
       let mailOptions = {
         from: process.env.EMAIL,
@@ -243,6 +259,12 @@ app.post('/forgetpassword', (req, res) => {
   })
    .catch(err => res.status(400).json('wrong Email'))
 })
+
+app.post('/otp',otpChecker, (req, res) =>{
+    console.log('sesion.otp', req.session.OTP)
+  res.send({message:"otp received"})
+})
+
 app.get('/logout', (req, res) => {
   res.clearCookie('user_sid');
   res.send({loggedOut:true});

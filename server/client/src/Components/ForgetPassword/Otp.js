@@ -36,23 +36,25 @@ export default class Otp extends Component {
         console.log(this.state.signInEmail);
         console.log(this.state.otp);
 
-        // fetch('http://localhost:3001/forgetpassword', {
-        //     method: 'post',
-        //     headers: {'Content-Type': 'application/json'},
-        //     body: JSON.stringify({
-        //         email: this.state.signInEmail
-        //     })
-        // })
-        // .then(response => response.json())
-        // .then(data => {
-        //     console.log("data from sign", data)
-        //     if(data.mailsend){
-        //         this.setState({notRegister: 'Mail Send'});
-        //     }else {
-        //         this.setState({notRegister: 'You are not registered'});
-        //     }            
+        fetch('http://localhost:3001/otp', {
+            method: 'post',
+            credentials:'include',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: this.state.signInEmail,
+                otp: this.state.otp
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("data from sign", data)
+            // if(data.mailsend){
+            //     this.setState({notRegister: 'Mail Send'});
+            // }else {
+            //     this.setState({notRegister: 'You are not registered'});
+            // }            
          
-        // })
+        })
 
         
     }

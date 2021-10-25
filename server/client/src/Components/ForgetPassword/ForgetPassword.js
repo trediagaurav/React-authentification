@@ -35,6 +35,7 @@ export default class ForgetPassword extends Component {
 
         fetch('http://localhost:3001/forgetpassword', {
             method: 'post',
+            credentials:'include',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 email: this.state.signInEmail
