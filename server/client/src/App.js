@@ -87,7 +87,7 @@ class App extends Component {
   render() {
 
     //Destructuring our states instead of using this.state
-    const { isSignedIn, route} = this.state;
+    const { isSignedIn, route, changeEmail} = this.state;
 
     return (
       <div className="App">
@@ -127,10 +127,10 @@ class App extends Component {
 
          :
           //else return the route to Register
-          route === 'newPassword' ?
+          route === 'newPassword' && changeEmail ?
           // setTimeout(() => {console.log("this is the first message")}, 5000)
           <NewPassword email={this.state.changeEmail} onRouteChange={this.onRouteChange} />
-
+  
           :
              //else return the route to Register
 

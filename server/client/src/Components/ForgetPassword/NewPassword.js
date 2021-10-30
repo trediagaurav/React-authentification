@@ -10,6 +10,8 @@ export default class ForgetPassword extends Component {
 
         this.state = {
 
+            email: this.props.email,
+
             newPassword: '',
 
             confirmPassword: '',
@@ -32,7 +34,7 @@ export default class ForgetPassword extends Component {
     onSubmit = () => {
 
         console.log(this.state.newPassword, this.state.confirmPassword);
-        console.log(this.props)
+        console.log(this.state.email)
         fetch('http://localhost:3001/newpassword', {
             method: 'post',
             credentials:'include',
