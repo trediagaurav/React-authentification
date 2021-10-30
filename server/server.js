@@ -69,15 +69,6 @@ app.use((req, res, next) => {
   if (req.cookies.user_sid && !req.session.user) {
       res.clearCookie('user_sid');
   }
-  // if (req.session.OTP && req.cookies.user_sid) {
-  //   console.log('sesion.OTP from If', req.session.OTP)
-  // }
-  setTimeout(() =>{
-    if (req.session.OTP) {
-      req.session.cookie.expires = 0;
-      console.log('sesion.OTP from If', req.session.OTP)
-    }
-}, 5000);
   next();
 });
 
@@ -247,7 +238,7 @@ app.post('/forgetpassword', (req, res) => {
       let otp = Math.floor((Math.random()*10000)+1)
       let Otpdata = ({mail: userMail, otp: otp})
       console.log(otp)
-      res.cookie('OTP',process.env.ACCESS_TOKEN_SECRET, { maxAge: 10000, httpOnly: true })
+      res.cookie('OTP',process.env.REFRESH_TOKEN_SECRET, { maxAge: 50000, httpOnly: true })
       req.session.OTP = Otpdata
       // res.json({otp:otp})
       let mailOptions = {
@@ -279,6 +270,7 @@ app.post('/otp',otpChecker, (req, res) =>{
 
 app.get('/logout', (req, res) => {
   res.clearCookie('user_sid');
+  res.clearCookie('OTP');
   res.send({loggedOut:true});
 })
 

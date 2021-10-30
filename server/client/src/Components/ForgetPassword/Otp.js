@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-
+import axios from "axios";
 export default class Otp extends Component {
     constructor(props){
         console.log(props)
@@ -54,9 +54,13 @@ export default class Otp extends Component {
             //     this.setState({notRegister: 'You are not registered'});
             // }            
          
+        })   
+    }
+    back = () => {
+        axios.get("http://localhost:3001/logout", {withCredentials: true}).then((response) =>{
+            console.log("Logout", response)
         })
-
-        
+        this.props.onRouteChange('forgotPassword');
     }
     render() {
 
@@ -91,7 +95,7 @@ export default class Otp extends Component {
                             <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Submit" disabled={(this.state.signInEmail === "") ? true : false } onClick={this.onSubmit} style={{borderRadius:"4px"}}/>
                         </div>
                         <div className="lh-copy mt3">
-                            {/* <p onClick={ () => onRouteChange('signin')}  className="f6 link dim black db pointer">Sign In</p> */}
+                            <p onClick={this.back}  className="f6 link dim black db pointer">Back</p>
                             {(this.state.signInEmail === "") ? <div className="emptyFiledMsg"><span>Empty Fields</span></div> : null }
                         <div className=""><span>{this.state.notRegister}</span></div>
                         </div>
