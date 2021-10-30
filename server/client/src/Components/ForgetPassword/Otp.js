@@ -11,15 +11,6 @@ export default class Otp extends Component {
 
             otp: '',
 
-            // signInPassword: '',
-
-            // notRegister: '',
-
-            // login:false,
-
-            // store:null,
-
-            // userData:''
         }
     }
 
@@ -48,11 +39,12 @@ export default class Otp extends Component {
         .then(response => response.json())
         .then(data => {
             console.log("data from sign", data)
-            // if(data.mailsend){
-            //     this.setState({notRegister: 'Mail Send'});
-            // }else {
-            //     this.setState({notRegister: 'You are not registered'});
-            // }            
+            if(data.otp){
+                console.log("otp is true")
+            }
+           else {
+                this.setState({notRegister: 'OTP expired, please try again'});
+            }            
          
         })   
     }
@@ -83,7 +75,7 @@ export default class Otp extends Component {
                             </div>
                             <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="email-address">OTP</label>
-                                <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="text" name="otp" id="otp" placeholder="Enter your otp" onChange={this.onOtpChange} onKeyPress={event => {
+                                <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="text"  name="otp" id="otp" placeholder="Enter your otp" onChange={this.onOtpChange} onKeyPress={event => {
                                 if (event.key === 'Enter' && event.target.value.trim() > 0) {
                                 this.onSubmit()
                                 }
@@ -97,7 +89,7 @@ export default class Otp extends Component {
                         <div className="lh-copy mt3">
                             <p onClick={this.back}  className="f6 link dim black db pointer">Back</p>
                             {(this.state.signInEmail === "") ? <div className="emptyFiledMsg"><span>Empty Fields</span></div> : null }
-                        <div className=""><span>{this.state.notRegister}</span></div>
+                        <div className="text-danger"><span>{this.state.notRegister}</span></div>
                         </div>
                     </div>
                 </main>

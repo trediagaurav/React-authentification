@@ -17,15 +17,6 @@ export default class ForgetPassword extends Component {
 
             form : true
 
-            // signInPassword: '',
-
-            // notRegister: '',
-
-            // login:false,
-
-            // store:null,
-
-            // userData:''
         }
     }
 

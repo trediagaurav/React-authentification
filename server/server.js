@@ -85,6 +85,7 @@ const otpChecker = (req, res, next) => {
     console.log("opt checker pass")
       next();
   } else {
+    res.clearCookie('OTP');
     res.json({otp: false})
   }
 };
@@ -236,7 +237,7 @@ app.post('/forgetpassword', (req, res) => {
     if(data[0].email === req.body.email){
       let userMail = data[0].email
       let otp = Math.floor((Math.random()*10000)+1)
-      let Otpdata = ({mail: userMail, otp: otp})
+      let Otpdata = ({mail:userMail,otp:otp})
       console.log(otp)
       res.cookie('OTP',process.env.REFRESH_TOKEN_SECRET, { maxAge: 50000, httpOnly: true })
       req.session.OTP = Otpdata
@@ -245,7 +246,7 @@ app.post('/forgetpassword', (req, res) => {
         from: process.env.EMAIL,
         to: userMail,
         subject: 'OTP for change password',
-        text:`Given Otp for the new password ${otp}`
+        text:`Given Otp for the new password ${otp}, will expire in 5 minutes.`
       };
       transporter.sendMail(mailOptions, function(){
         console.log("click on mail send funct")
@@ -262,10 +263,13 @@ app.post('/forgetpassword', (req, res) => {
 })
 
 app.post('/otp',otpChecker, (req, res) =>{
-    console.log('sesion.otp', req.session.OTP)
-    console.log('email', req.body.email)
-    console.log('otp', req.body.otp)
-  res.send({message:"otp received"})
+  console.log(req.session.OTP,req.body.email,req.body.otp)
+  if (req.session.OTP.mail == req.body.email && req.session.OTP.otp == req.body.otp) {
+    console.log("mail passed otp")
+      res.json({otp: true}) 
+  }else{
+    res.send({message:"otp not received"})
+  }
 })
 
 app.get('/logout', (req, res) => {
