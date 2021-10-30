@@ -7,6 +7,7 @@ import Post from "./Components/Post";
 import axios from "axios";
 import ForgetPassword from "./Components/ForgetPassword/ForgetPassword";
 import Otp from "./Components/ForgetPassword/Otp";
+import NewPassword from "./Components/ForgetPassword/NewPassword"
 
 
 
@@ -23,7 +24,7 @@ class App extends Component {
       //To Route the between signin forms and dashboard
       route: 'signin',
       isSignedIn: false,
-
+      changeEmail:'',
       user: {
 
         id: '',
@@ -41,7 +42,8 @@ class App extends Component {
 
   //Function to load the user when register form is inputed(pass function to Register Component)
   loadUser = (data) => {
-
+    console.log("app.loaduser", data)
+    this.setState({changeEmail: data})
     this.setState({user: {
 
       id: data.id,
@@ -52,6 +54,7 @@ class App extends Component {
 
     }})
     console.log("app js", this.state.user.name)
+    console.log("change email",this.state.changeEmail)
   }
 
   
@@ -123,6 +126,12 @@ class App extends Component {
            <Otp loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
 
          :
+          //else return the route to Register
+          route === 'newPassword' ?
+          // setTimeout(() => {console.log("this is the first message")}, 5000)
+          <NewPassword email={this.state.changeEmail} onRouteChange={this.onRouteChange} />
+
+          :
              //else return the route to Register
 
              <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />

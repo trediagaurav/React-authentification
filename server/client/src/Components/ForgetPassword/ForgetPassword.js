@@ -28,7 +28,6 @@ export default class ForgetPassword extends Component {
     onSubmit = () => {
 
         console.log(this.state.signInEmail);
-        this.setState({popup: true})
         fetch('http://localhost:3001/forgetpassword', {
             method: 'post',
             credentials:'include',
@@ -44,7 +43,6 @@ export default class ForgetPassword extends Component {
                 this.setState({notRegister: 'Mail Send'});
                 this.setState({popup: true})
                 this.setState({form: false})
-                // this.props.onRouteChange('otp');
             }else {
                 this.setState({notRegister: 'You are not registered'});
             }      
@@ -89,9 +87,6 @@ export default class ForgetPassword extends Component {
                 </article>}
                 <div>
                     {this.state.popup && <Modal.Dialog className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
-                        {/* <Modal.Header>
-                            <Modal.Title>Modal title</Modal.Title>
-                        </Modal.Header> */}
                         <Modal.Body>
                             <p>OTP has been mailed and will expire in 5 minutes</p>
                         </Modal.Body>

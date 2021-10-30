@@ -241,7 +241,6 @@ app.post('/forgetpassword', (req, res) => {
       console.log(otp)
       res.cookie('OTP',process.env.REFRESH_TOKEN_SECRET, { maxAge: 50000, httpOnly: true })
       req.session.OTP = Otpdata
-      // res.json({otp:otp})
       let mailOptions = {
         from: process.env.EMAIL,
         to: userMail,
@@ -266,12 +265,17 @@ app.post('/otp',otpChecker, (req, res) =>{
   console.log(req.session.OTP,req.body.email,req.body.otp)
   if (req.session.OTP.mail == req.body.email && req.session.OTP.otp == req.body.otp) {
     console.log("mail passed otp")
-      res.json({otp: true}) 
+      res.json({otp: true, email:req.body.email}) 
   }else{
     res.send({message:"otp not received"})
   }
 })
 
+app.post('/newpassword', (req, res) =>{
+  console.log("new password session",req.session.OTP)
+    res.send({message:"from new password"})
+  
+})
 app.get('/logout', (req, res) => {
   res.clearCookie('user_sid');
   res.clearCookie('OTP');

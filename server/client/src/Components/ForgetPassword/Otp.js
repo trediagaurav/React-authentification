@@ -41,6 +41,8 @@ export default class Otp extends Component {
             console.log("data from sign", data)
             if(data.otp){
                 console.log("otp is true")
+                this.props.onRouteChange('newPassword');
+                this.props.loadUser(data.email);
             }
            else {
                 this.setState({notRegister: 'OTP expired, please try again'});
