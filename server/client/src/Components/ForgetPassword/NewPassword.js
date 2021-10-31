@@ -40,6 +40,7 @@ export default class ForgetPassword extends Component {
             credentials:'include',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
+                email: this.state.email,
                 newPassword: this.state.newPassword,
                 confirmPassword: this.state.confirmPassword
             })
@@ -47,14 +48,17 @@ export default class ForgetPassword extends Component {
         .then(response => response.json())
         .then(data => {
             console.log("data from newpassword", data)
-            // if(data.mailSend === true){
-            //     this.setState({notRegister: 'Mail Send'});
-            //     this.setState({popup: true})
-            //     this.setState({form: false})
-            //     // this.props.onRouteChange('otp');
-            // }else {
-            //     this.setState({notRegister: 'Password not match.'});
-            // }      
+            if (data.newPassword === true) {
+                this.setState({popup: true})
+                this.setState({form: false})
+            }
+            if(!data.newPassword) {   
+                this.setState({notRegister: 'Password not match.'});
+            }
+            if(data.missingPassword === true){
+                this.setState({notRegister: 'wrong credentials'});
+            } 
+            
         })   
     }
 
@@ -81,7 +85,7 @@ export default class ForgetPassword extends Component {
                                 <legend className="f1 fw6 ph0 mh0">New Password</legend>
                                 <div className="mt3">
                                     <label className="db fw6 lh-copy f6" htmlFor="passwords">New Password</label>
-                                    <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="password" name="newPassword" id="newPassword" placeholder="Enter new password" onChange={this.onPasswordChange} onKeyPress={event => {
+                                    <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="password" required name="newPassword" id="newPassword" placeholder="Enter new password" onChange={this.onPasswordChange} onKeyPress={event => {
                                     if (event.key === 'Enter' && event.target.value.trim() > 0) {
                                     this.onSubmit()
                                     }
@@ -89,7 +93,7 @@ export default class ForgetPassword extends Component {
                                 </div>
                                 <div className="mt3">
                                 <label className="db fw6 lh-copy f6" htmlFor="password">Confirm password</label>
-                                <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="password"  name="confirmPassword" id="confirmPassword" placeholder="Confirm new password" onChange={this.onConfirmPasswordChange} onKeyPress={event => {
+                                <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="password"  required name="confirmPassword" id="confirmPassword" placeholder="Confirm new password" onChange={this.onConfirmPasswordChange} onKeyPress={event => {
                                 if (event.key === 'Enter' && event.target.value.trim() > 0) {
                                 this.onSubmit()
                                 }
@@ -103,7 +107,7 @@ export default class ForgetPassword extends Component {
                             <div className="lh-copy mt3">
                                 <p onClick={ () => onRouteChange('signin')}  className="f6 link dim black db pointer">Back</p>
                                 {(this.state.signInEmail === "") ? <div className="emptyFiledMsg"><span>Empty Fields</span></div> : null }
-                            <div className=""><span>{this.state.notRegister}</span></div>
+                            <div className="text-danger"><span>{this.state.notRegister}</span></div>
                             </div>
                         </div>
                     </main>
@@ -114,7 +118,7 @@ export default class ForgetPassword extends Component {
                             <Modal.Title>Modal title</Modal.Title>
                         </Modal.Header> */}
                         <Modal.Body>
-                            <p>Password Changes successfully</p>
+                            <p>Password Changed successfully</p>
                         </Modal.Body>
                         <Modal.Footer>
                             <Button variant="secondary" onClick={this.close}>Close</Button>

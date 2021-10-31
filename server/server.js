@@ -272,8 +272,24 @@ app.post('/otp',otpChecker, (req, res) =>{
 })
 
 app.post('/newpassword', (req, res) =>{
-  console.log("new password session",req.session.OTP)
-    res.send({message:"from new password"})
+  console.log(req.body)
+  const { email, newPassword, confirmPassword } = req.body;
+    if(!email || !newPassword || !confirmPassword){
+      return res.json({missingPassword : true});
+    }
+    if(newPassword === confirmPassword){
+      const newhash = bcrypt.hashSync(confirmPassword);
+      db.select('email').from('login')
+      .where('email', '=', email)
+      .update({
+        hash: newhash,
+      })
+      .then(data =>{
+        res.send({newPassword : true})
+      })
+    } else {
+      res.json({newPassword : false})
+  }
   
 })
 app.get('/logout', (req, res) => {
