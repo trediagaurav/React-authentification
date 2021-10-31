@@ -105,7 +105,7 @@ export default class ForgetPassword extends Component {
                                 <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Send OTP" disabled={(this.state.signInEmail === "") ? true : false } onClick={this.onSubmit} style={{borderRadius:"4px"}}/>
                             </div>
                             <div className="lh-copy mt3">
-                                <p onClick={ () => onRouteChange('signin')}  className="f6 link dim black db pointer">Back</p>
+                                <p onClick={this.back}  className="f6 link dim black db pointer">Back</p>
                                 {(this.state.signInEmail === "") ? <div className="emptyFiledMsg"><span>Empty Fields</span></div> : null }
                             <div className="text-danger"><span>{this.state.notRegister}</span></div>
                             </div>
