@@ -56,9 +56,9 @@ app.use(
     secret: process.env.ACCESS_TOKEN_SECRET,
     resave: false,
     saveUninitialized: true,
+    expires: 90000*60,
     cookie: {
-        expires: 300000,
-        httpOnly:true
+        httpOnly:true,
     }
   })
 );
