@@ -38,16 +38,21 @@ export default class Otp extends Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("data from sign", data)
+            console.log("data otp", data)
             if(data.otp){
                 console.log("otp is true")
                 this.props.onRouteChange('newPassword');
                 this.props.loadUser(data.email);
             }
-           else {
+            // else if(!data.otp){
+            //     this.setState({notRegister: 'Email or Otp is incorrect'});
+            // }
+            // else{
+            //     this.setState({notRegister: 'OTP expired, please try again'});
+            // }
+            if(data.otpCheckar) {
                 this.setState({notRegister: 'OTP expired, please try again'});
-            }            
-         
+            }          
         })   
     }
     back = () => {
@@ -89,7 +94,7 @@ export default class Otp extends Component {
                             <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Submit" disabled={(this.state.signInEmail === "") ? true : false } onClick={this.onSubmit} style={{borderRadius:"4px"}}/>
                         </div>
                         <div className="lh-copy mt3">
-                            <p onClick={this.back}  className="f6 link dim black db pointer">Back</p>
+                            <p onClick={this.back}  className="f6 link dim blue db pointer">Back</p>
                             {(this.state.signInEmail === "") ? <div className="emptyFiledMsg"><span>Empty Fields</span></div> : null }
                         <div className="text-danger"><span>{this.state.notRegister}</span></div>
                         </div>

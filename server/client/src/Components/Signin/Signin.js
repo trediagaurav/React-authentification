@@ -68,11 +68,9 @@ class Signin extends React.Component {
                 } else {
                     this.setState({notRegister: 'You are not registered'});
                 }
-            }            
-         
+            }           
         })
-
-        
+        .catch(err => this.setState({notRegister: 'You are not registered'}))        
     }
 
     render(){
@@ -109,10 +107,10 @@ class Signin extends React.Component {
                         <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in" disabled={(this.state.signInEmail === "" || this.state.signInPassword === "") ? true : false } onClick={this.onSubmitSignIn} style={{borderRadius:"4px"}}/>
                     </div>
                     <div className="lh-copy mt3">
-                        <p onClick={ () => onRouteChange('register')}  className="f6 link dim black db pointer">Register</p>
+                        <p onClick={ () => onRouteChange('register')}  className="f6 link dim blue db pointer">Register</p>
                         {(this.state.signInEmail === "" || this.state.signInPassword === "") ? <div className="emptyFiledMsg"><span>Empty Fields</span></div> : null }
-                       <div className=""><span>{this.state.notRegister}</span></div>
-                        <p   onClick={ () => onRouteChange('forgotPassword')} className="f6 link dim black db f6 pointer">Forgot your password?</p>
+                       <div className="text-danger"><span>{this.state.notRegister}</span></div>
+                        <p   onClick={ () => onRouteChange('forgotPassword')} className="f6 link dim blue db f6 pointer">Forgot your password?</p>
                     </div>
                 </div>
             </main>

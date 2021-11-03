@@ -27,8 +27,9 @@ export default class Post extends Component {
             console.log(data)
             if (data.loggedIn === false) {
                 this.props.onRouteChange('signout');
-             }
-        })        
+            }
+        }) 
+        .catch(err => this.props.onRouteChange('signout'));      
     }
     render() {
         return (

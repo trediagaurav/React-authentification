@@ -57,9 +57,9 @@ export default class ForgetPassword extends Component {
             }
             if(data.missingPassword === true){
                 this.setState({notRegister: 'wrong credentials'});
-            } 
-            
-        })   
+            }   
+        })
+        .catch(err => this.setState({notRegister: 'wrong credentials'}))     
     }
 
     close = () => {

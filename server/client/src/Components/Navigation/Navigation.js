@@ -6,12 +6,13 @@ import Signin from "../Signin/Signin";
 const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
         //If we are signedIn display the sign out navigation
         const signOut = () =>{
-            console.log("click")
             onRouteChange('signout')
-            // localStorage.clear()
-            
             axios.get("http://localhost:3001/logout", {withCredentials: true}).then((response) =>{
-                console.log("Logout", response)
+                if (response.data.loggedOut) {
+                    onRouteChange('signout')
+                    console.log("Logout", response)
+                }
+                console.log("Error logging out")
             })
         }
 
@@ -34,9 +35,9 @@ const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
 
                <nav style={{display: 'flex', justifyContent: 'flex-end'}}>
 
-                 <p onClick={() => onRouteChange('signin')} className='f3 link dim black underline pa3 pointer'>Sign In</p>
+                 <p onClick={() => onRouteChange('signin')} className='f3 link dim black underline pa3 pointer text-decoration-none'>Sign In</p>
 
-                 <p onClick={() => onRouteChange('register')} className='f3 link dim black underline pa3 pointer'>Regsiter</p>
+                 <p onClick={() => onRouteChange('register')} className='f3 link dim black underline pa3 pointer text-decoration-none'>Regsiter</p>
 
                </nav>
 

@@ -56,9 +56,9 @@ app.use(
     secret: process.env.ACCESS_TOKEN_SECRET,
     resave: false,
     saveUninitialized: true,
-    expires: 90000*60,
     cookie: {
         httpOnly:true,
+        expires: 90000*60,
     }
   })
 );
@@ -83,10 +83,10 @@ const sessionChecker = (req, res, next) => {
 const otpChecker = (req, res, next) => {
   if (req.session.OTP  && req.cookies.OTP) {
     console.log("opt checker pass")
-      next();
+    next();
+    res.clearCookie('OTP')
   } else {
-    res.clearCookie('OTP');
-    res.json({otp: false})
+    res.json({otpChecker: false})
   }
 };
 
@@ -223,8 +223,6 @@ app.post('/register', (req, res) => {
        .then(trx.commit)
        .catch(trx.rollback)
     })
-  
-  
      .catch(err => res.status(400).json('unable to register'));
 })
 
@@ -267,7 +265,7 @@ app.post('/otp',otpChecker, (req, res) =>{
     console.log("mail passed otp")
       res.json({otp: true, email:req.body.email}) 
   }else{
-    res.send({message:"otp not received"})
+    res.json({otp: false})
   }
 })
 
@@ -287,6 +285,7 @@ app.post('/newpassword', (req, res) =>{
       .then(data =>{
         res.send({newPassword : true})
       })
+      .catch(err => res.status(400).json({newPassword : false}))
     } else {
       res.json({newPassword : false})
   }

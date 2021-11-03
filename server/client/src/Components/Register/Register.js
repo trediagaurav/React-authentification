@@ -70,7 +70,7 @@ class Register extends React.Component {
         })
         .then(response => response.json())
         .then(data => {
-            
+            console.log(data)
             if (data.user.id) {
 
                 //Load new user
@@ -80,9 +80,9 @@ class Register extends React.Component {
                 this.props.onRouteChange('home') 
             } else {
                 this.setState({notRegister: 'Already registered'});
-              }
+            }
         })
-
+        .catch(err => this.setState({notRegister: 'Already registered'}))
         
     }
 
@@ -114,10 +114,10 @@ class Register extends React.Component {
                     </fieldset>
                     <div className="">
                         {/* <input onClick={ this.onSubmitSignIn } className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Register" disabled={(this.state.name === "" || this.state.name.length > 8 || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? true : false } /> */}
-                        <input onClick={ this.onSubmitSignIn } className="RegisterButton" type="submit" value="Register" disabled={(this.state.name === "" || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? true : false }/>
+                        <input onClick={ this.onSubmitSignIn } className="RegisterButton" type="submit" value="Submit" disabled={(this.state.name === "" || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? true : false }/>
 
-                        {(this.state.name === "" || this.state.name.length > 8 || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? <div className="emptyInpMsg"><span>Fill all the Credentials</span></div> : null }
-                        <div className="emptyInpMsg" ><span>{this.state.notRegister}</span></div>
+                        {(this.state.name === "" || this.state.name.length > 8 || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? <div className="emptyInpMsg text-danger"><span>Fill all the Credentials</span></div> : null }
+                        <div className="emptyInpMsg text-danger" ><span>{this.state.notRegister}</span></div>
 
                     </div>
                 </div>
