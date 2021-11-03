@@ -50,7 +50,7 @@ export default class Otp extends Component {
             // else{
             //     this.setState({notRegister: 'OTP expired, please try again'});
             // }
-            if(data.otpCheckar) {
+            if(data.otpChecker === false) {
                 this.setState({notRegister: 'OTP expired, please try again'});
             }          
         })   
