@@ -89,7 +89,6 @@ const otpChecker = (req, res, next) => {
     if (req.session.OTP  && req.cookies.OTP) {
       console.log("opt checker pass")
       next();
-      // res.clearCookie('OTP')
     } else {
       res.json({otpChecker: false})
     }
