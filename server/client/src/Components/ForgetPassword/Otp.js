@@ -39,21 +39,23 @@ export default class Otp extends Component {
         .then(response => response.json())
         .then(data => {
             console.log("data otp", data)
-            if(data.otp){
+            if(data.otp === true){
                 console.log("otp is true")
                 this.props.onRouteChange('newPassword');
                 this.props.loadUser(data.email);
+            }else if(data.otp === false){
+                this.setState({notRegister: 'Email or Otp is incorrect'});
+            }else{
+                // this.setState({notRegister: 'OTP expired, please try again'});
             }
-            // else if(!data.otp){
-            //     this.setState({notRegister: 'Email or Otp is incorrect'});
-            // }
-            // else{
-            //     this.setState({notRegister: 'OTP expired, please try again'});
-            // }
             if(data.otpChecker === false) {
                 this.setState({notRegister: 'OTP expired, please try again'});
+            }
+            if(data.missing === true) {
+                this.setState({notRegister: 'Incomplete Credentials'});
             }          
-        })   
+        }) 
+        .catch(err => this.setState({notRegister: 'OTP expired, please try again'}))  
     }
     back = () => {
         axios.get("http://localhost:3001/logout", {withCredentials: true}).then((response) =>{

@@ -81,13 +81,19 @@ const sessionChecker = (req, res, next) => {
 };
 
 const otpChecker = (req, res, next) => {
-  if (req.session.OTP  && req.cookies.OTP) {
-    console.log("opt checker pass")
-    next();
-    res.clearCookie('OTP')
-  } else {
-    res.json({otpChecker: false})
-  }
+  console.log("otp", req.body)
+  const { email, otp } = req.body;
+  if(!email || !otp){
+    return res.json({missing: true});
+  }else{
+    if (req.session.OTP  && req.cookies.OTP) {
+      console.log("opt checker pass")
+      next();
+      // res.clearCookie('OTP')
+    } else {
+      res.json({otpChecker: false})
+    }
+  } 
 };
 
 // Sending Mail
@@ -261,12 +267,12 @@ app.post('/forgetpassword', (req, res) => {
 
 app.post('/otp',otpChecker, (req, res) =>{
   console.log(req.session.OTP,req.body.email,req.body.otp)
-  if (req.session.OTP.mail == req.body.email && req.session.OTP.otp == req.body.otp) {
-    console.log("mail passed otp")
+     if (req.session.OTP.mail == req.body.email && req.session.OTP.otp == req.body.otp) {
+      console.log("mail passed otp")
       res.json({otp: true, email:req.body.email}) 
-  }else{
-    res.json({otp: false})
-  }
+    }else{
+      res.json({otp: false})
+    }     
 })
 
 app.post('/newpassword', (req, res) =>{
