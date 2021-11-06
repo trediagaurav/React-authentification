@@ -75,7 +75,7 @@ const sessionChecker = (req, res, next) => {
   if (req.session.user && req.cookies.user_sid) {
       next();
   } else {
-    res.json({loggedIn: false})
+    res.send({loggedIn: false})
   }
 };
 
@@ -89,7 +89,7 @@ const otpChecker = (req, res, next) => {
       console.log("opt checker pass")
       next();
     } else {
-      res.json({otpChecker: false})
+      res.send({otpChecker: false})
     }
   } 
 };
@@ -224,9 +224,8 @@ app.post('/forgetpassword', (req, res) => {
       req.session.OTP = Otpdata
       console.log(req.session.OTP)
       res.cookie('OTP',process.env.REFRESH_TOKEN_SECRET, {
-        maxAge: 10000*60*5,
+        maxAge: 1000*60*5,
         httpOnly: true,
-        secure: true,
        })
       let mailOptions = {
         from: process.env.EMAIL,
@@ -240,10 +239,10 @@ app.post('/forgetpassword', (req, res) => {
           console.log('error occurs', err)
         } 
       })
-      res.json({mailSend : true}) 
-    } 
+      res.send({mailSend : true})
+    }
   })
-  .catch(err => res.status(400).json('wrong Email'))
+  .catch(err => res.status(400).send('wrong Email'))
 })
 
 app.post('/otp',otpChecker, (req, res) =>{
@@ -251,20 +250,11 @@ app.post('/otp',otpChecker, (req, res) =>{
   const OldOtp = req.session.OTP
      if (req.session.OTP.mail == req.body.email && req.session.OTP.otp == req.body.otp) {
       console.log("mail passed otp")
-      res.json({otp: true, email:req.body.email})
-      // res.clearCookie('OTP')
+      res.clearCookie('OTP').clearCookie('user_sid').send({otp: true, email:req.body.email})
     }else{
-      res.json({otp: false})
+      res.send({otp: false})
     }     
 })
-// app.post('/otp', (req, res) =>{
-//   console.log("otp post cookies", req.cookies.OTP)
-//   const otp = req.session.OTP
-//   console.log("otp post", req.session.OTP,req.cookies.OTP, req.body.email,req.body.otp)
-  
-//     res.send({message:"hello"})
-//     res.session.OTP = otp    
-// })
 
 app.post('/newpassword', (req, res) =>{
   console.log(req.body)
@@ -282,9 +272,9 @@ app.post('/newpassword', (req, res) =>{
       .then(data =>{
         res.send({newPassword : true})
       })
-      .catch(err => res.status(400).json({newPassword : false}))
+      .catch(err => res.status(400).send({newPassword : false}))
     } else {
-      res.json({newPassword : false})
+      res.send({newPassword : false})
   }
   
 })

@@ -110,7 +110,7 @@ class Signin extends React.Component {
                         <p onClick={ () => onRouteChange('register')}  className="f6 link dim blue db pointer">Register</p>
                         {(this.state.signInEmail === "" || this.state.signInPassword === "") ? <div className="emptyFiledMsg"><span>Empty Fields</span></div> : null }
                        <div className="text-danger"><span>{this.state.notRegister}</span></div>
-                        <p   onClick={ () => onRouteChange('forgotPassword')} className="f6 link dim blue db f6 pointer">Forgot your password?</p>
+                        <p   onClick={ () => onRouteChange('forgotPassword')} className="f6 link dim blue db f6 pointer">Forgot password ?</p>
                     </div>
                 </div>
             </main>
