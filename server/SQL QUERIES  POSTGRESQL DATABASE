@@ -39,6 +39,9 @@ CREATE TABLE login
     email text UNIQUE NOT NULL
 
 );
+//////////////// Run the app /////////////////////
+
+Server side => package.json run in terminal => npm run dev
 
 ////////////// Email Account ////////////
 
