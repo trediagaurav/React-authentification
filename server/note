@@ -55,3 +55,7 @@ app.post('/register', (req, res) => {
     console.log("data", data)
   })
 })
+
+////////////// Email Account ////////////
+
+Make a Gmail account and write the details in the .env files to run the mail for otp
