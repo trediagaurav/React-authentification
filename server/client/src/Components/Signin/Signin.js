@@ -5,7 +5,6 @@ axios.defaults.withCredentials = true
 class Signin extends React.Component {
 
     constructor(props){
-        console.log(props)
         super(props)
 
         this.state = {
@@ -42,8 +41,6 @@ class Signin extends React.Component {
     //When the submit sign In button is clicked
     onSubmitSignIn = () => {
 
-        //console.log(this.state);
-
         //Send request to our server 
         fetch('http://localhost:3001/signin', {
             method: 'post',
@@ -56,12 +53,9 @@ class Signin extends React.Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("data from sign", data)
             if(data.user){
                 let loginName = data.user.name
-                console.log(loginName)
                 this.setState({loginName:data.user.name})
-                console.log(this.state.loginName)
                 if(data.user.id){
                     this.props.loadUser(data.user);
                     this.props.onRouteChange('home');

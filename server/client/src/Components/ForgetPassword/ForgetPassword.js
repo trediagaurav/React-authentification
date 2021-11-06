@@ -4,7 +4,6 @@ import {Button, Alert, Modal, ModalDialog} from "react-bootstrap";
 export default class ForgetPassword extends Component {
 
     constructor(props){
-        console.log(props)
         super(props)
 
         this.state = {
@@ -26,8 +25,6 @@ export default class ForgetPassword extends Component {
     }
 
     onSubmit = () => {
-
-        console.log(this.state.signInEmail);
         fetch('http://localhost:3001/forgetpassword', {
             method: 'post',
             credentials:'include',
@@ -38,7 +35,6 @@ export default class ForgetPassword extends Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("data from sign", data)
             if(data.mailSend === true){
                 this.setState({notRegister: 'Mail Send'});
                 this.setState({popup: true})

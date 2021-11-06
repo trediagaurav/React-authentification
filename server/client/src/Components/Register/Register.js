@@ -55,8 +55,6 @@ class Register extends React.Component {
     //When the submit Register button is clicked
     onSubmitSignIn = () => {
 
-        //console.log(this.state);
-
         //Send request to our server 
         fetch('http://localhost:3001/register', {
             method: 'post',
@@ -70,7 +68,6 @@ class Register extends React.Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
             if (data.user.id) {
 
                 //Load new user

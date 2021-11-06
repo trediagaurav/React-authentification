@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import axios from "axios";
 export default class Otp extends Component {
     constructor(props){
-        console.log(props)
         super(props)
 
         this.state = {
@@ -24,9 +23,6 @@ export default class Otp extends Component {
     }
     onSubmit = () => {
 
-        console.log(this.state.signInEmail);
-        console.log(this.state.otp);
-
         fetch('http://localhost:3001/otp', {
             method: 'post',
             credentials:'include',
@@ -38,7 +34,6 @@ export default class Otp extends Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("data otp", data)
             if(data.otp === true){
                 console.log("otp is true")
                 this.props.onRouteChange('newPassword');

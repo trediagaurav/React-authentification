@@ -42,10 +42,8 @@ class App extends Component {
 
   //Function to load the user when register form is inputed(pass function to Register Component)
   loadUser = (data) => {
-    console.log("app.loaduser", data)
     this.setState({changeEmail: data})
     this.setState({user: {
-
       id: data.id,
       name: data.name,
       email: data.email,
@@ -53,8 +51,6 @@ class App extends Component {
       joined: data.joined
 
     }})
-    console.log("app js", this.state.user.name)
-    console.log("change email",this.state.changeEmail)
   }
 
   
@@ -123,25 +119,21 @@ class App extends Component {
 
            :
 
-           //else return the route to Register
-           route === 'otp' ?
-           <Otp loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
+              //else return the route to Register
+              route === 'otp' ?
+              <Otp loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
 
-         :
-          //else return the route to Register
-          route === 'newPassword' && changeEmail ?
-          // setTimeout(() => {console.log("this is the first message")}, 5000)
-          <NewPassword email={this.state.changeEmail} onRouteChange={this.onRouteChange} />
-  
-          :
+            :
+              //else return the route to Register
+              route === 'newPassword' && changeEmail ?
+              <NewPassword email={this.state.changeEmail} onRouteChange={this.onRouteChange} />
+      
+            :
              //else return the route to Register
 
              <Register loadUser={this.loadUser} onRouteChange={this.onRouteChange} />
            )
-              
-
         }
-
       </div>
     );
   }

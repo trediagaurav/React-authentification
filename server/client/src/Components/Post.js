@@ -13,7 +13,6 @@ export default class Post extends Component {
     }
 
     onSubmit = () => {
-        console.log(this.state.textarea)
         fetch('http://localhost:3001/text', {
             method: 'post',
             credentials:'include',
@@ -24,7 +23,6 @@ export default class Post extends Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data)
             if (data.loggedIn === false) {
                 this.props.onRouteChange('signout');
             }

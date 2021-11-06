@@ -5,7 +5,6 @@ import axios from "axios";
 export default class ForgetPassword extends Component {
 
     constructor(props){
-        console.log("new password props",props)
         super(props)
 
         this.state = {
@@ -33,8 +32,6 @@ export default class ForgetPassword extends Component {
     }
     onSubmit = () => {
 
-        console.log(this.state.newPassword, this.state.confirmPassword);
-        console.log(this.state.email)
         fetch('http://localhost:3001/newpassword', {
             method: 'post',
             credentials:'include',
@@ -47,7 +44,6 @@ export default class ForgetPassword extends Component {
         })
         .then(response => response.json())
         .then(data => {
-            console.log("data from newpassword", data)
             if (data.newPassword === true) {
                 this.setState({popup: true})
                 this.setState({form: false})

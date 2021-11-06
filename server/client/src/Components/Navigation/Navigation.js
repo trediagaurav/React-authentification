@@ -37,7 +37,7 @@ const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
 
                  <p onClick={() => onRouteChange('signin')} className='f3 link dim black underline pa3 pointer text-decoration-none'>Sign In</p>
 
-                 <p onClick={() => onRouteChange('register')} className='f3 link dim black underline pa3 pointer text-decoration-none'>Regsiter</p>
+                 <p onClick={() => onRouteChange('register')} className='f3 link dim black underline pa3 pointer text-decoration-none'>Register</p>
 
                </nav>
 

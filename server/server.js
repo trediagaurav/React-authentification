@@ -62,9 +62,6 @@ app.use(
   })
 );
 app.use((req, res, next) => {
-  console.log('Cookies.User_sid', req.cookies.user_sid)
-  console.log('sesion.user', req.session.user)
-  console.log('sesion.OTP 68', req.session.OTP)
   if (req.cookies.user_sid && !req.session.user) {
       res.clearCookie('user_sid');
   }
@@ -80,7 +77,6 @@ const sessionChecker = (req, res, next) => {
 };
 
 const otpChecker = (req, res, next) => {
-  console.log("otp", req.body)
   const { email, otp } = req.body;
   if(!email || !otp){
     res.send({missing: true});
@@ -131,10 +127,6 @@ const db = knex({
 
 //Root Route
 app.get('/', (req, res) => {
-  console.log('session.otp without if', req.session.OTP)
-  if(req.cookies.user_sid){
-    console.log('Cookies.User_sid', req.cookies.user_sid)
-  }
   if(req.session.user){
     console.log('session.user', req.session.user)
     res.json({loggedIn:true, sessionUser:req.session})
@@ -155,7 +147,6 @@ app.post('/signin', (req, res) => {
   .where('email', '=', req.body.email)
   .then(data => {
     const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
-    // console.log(isValid);
     if(isValid){
      return db.select('*').from('users')
       .where('email', '=', req.body.email)
@@ -215,8 +206,6 @@ app.post('/forgetpassword', (req, res) => {
   db.select('email').from('login')
   .where('email', '=', req.body.email)
   .then(data => {
-    console.log("forgot password", data)
-    // console.log(isValid);
     if(data[0].email === req.body.email){
       let userMail = data[0].email
       let otp = Math.floor((Math.random()*10000)+1)
@@ -234,9 +223,8 @@ app.post('/forgetpassword', (req, res) => {
         text:`Given Otp for the new password ${otp}, will expire in 5 minutes.`
       };
       transporter.sendMail(mailOptions, function(){
-        console.log("click on mail send funct")
         if (err) {
-          console.log('error occurs', err)
+          console.log('mail error occurs', err)
         } 
       })
       res.send({mailSend : true})
@@ -246,10 +234,8 @@ app.post('/forgetpassword', (req, res) => {
 })
 
 app.post('/otp',otpChecker, (req, res) =>{
-  console.log(req.session.OTP,req.body.email,req.body.otp)
   const OldOtp = req.session.OTP
      if (req.session.OTP.mail == req.body.email && req.session.OTP.otp == req.body.otp) {
-      console.log("mail passed otp")
       res.clearCookie('OTP').clearCookie('user_sid').send({otp: true, email:req.body.email})
     }else{
       res.send({otp: false})
@@ -257,7 +243,6 @@ app.post('/otp',otpChecker, (req, res) =>{
 })
 
 app.post('/newpassword', (req, res) =>{
-  console.log(req.body)
   const { email, newPassword, confirmPassword } = req.body;
     if(!email || !newPassword || !confirmPassword){
       return res.json({missingPassword : true});
