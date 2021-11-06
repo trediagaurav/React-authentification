@@ -43,10 +43,9 @@ export default class Otp extends Component {
                 console.log("otp is true")
                 this.props.onRouteChange('newPassword');
                 this.props.loadUser(data.email);
+                
             }else if(data.otp === false){
                 this.setState({notRegister: 'Email or Otp is incorrect'});
-            }else{
-                // this.setState({notRegister: 'OTP expired, please try again'});
             }
             if(data.otpChecker === false) {
                 this.setState({notRegister: 'OTP expired, please try again'});

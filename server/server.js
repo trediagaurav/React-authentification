@@ -38,10 +38,9 @@ app.use(express.json())
 
 app.use(express.static(__dirname + '/client/src/'));
 
-// app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use(cookieParser());
+app.use(cookieParser('user_sid'));
 
 app.use(cors({
   origin: ["http://localhost:3000"],
@@ -58,7 +57,7 @@ app.use(
     saveUninitialized: true,
     cookie: {
         httpOnly:true,
-        expires: 90000*60,
+        expires: 3600000*9
     }
   })
 );
@@ -84,9 +83,9 @@ const otpChecker = (req, res, next) => {
   console.log("otp", req.body)
   const { email, otp } = req.body;
   if(!email || !otp){
-    return res.json({missing: true});
+    res.send({missing: true});
   }else{
-    if (req.session.OTP  && req.cookies.OTP) {
+    if (req.session.OTP  || req.cookies.OTP) {
       console.log("opt checker pass")
       next();
     } else {
@@ -105,23 +104,6 @@ let transporter = nodemailer.createTransport({
   }
 });
 
-// let mailOptions = {
-//   from: process.env.EMAIL,
-//   to:'tredia.gaurav@gmail.com',
-//   subject: 'Testing and testing already',
-//   text:'Its working'
-// };
-
-// transporter.sendMail(mailOptions, function(){
-//   if (err) {
-//     console.log('error occurs', err)
-//   }else {
-//     console.log('emael send !!!')
-//   }
-// })
-
-
-
 //CONNECT TO LOCAL POSTGRESQL DATABASE
 const db = knex({
 
@@ -132,9 +114,7 @@ const db = knex({
      user : 'postgres',
      password : 'jaan143',
      database : 'Auth'
-
     }
-
   });
 
 /////////////////////////////////////////////
@@ -151,6 +131,7 @@ const db = knex({
 
 //Root Route
 app.get('/', (req, res) => {
+  console.log('session.otp without if', req.session.OTP)
   if(req.cookies.user_sid){
     console.log('Cookies.User_sid', req.cookies.user_sid)
   }
@@ -158,9 +139,9 @@ app.get('/', (req, res) => {
     console.log('session.user', req.session.user)
     res.json({loggedIn:true, sessionUser:req.session})
   }
-  if(req.session.OTP){
+  if(req.session.OTP && req.cookies.OTP){
     console.log('session.otp', req.session.OTP)
-    res.json({otp:true, sessionOtp:req.session})
+    res.json({OTP:true, otp:req.session.otp})
   }
 })
 
@@ -208,7 +189,6 @@ app.post('/register', (req, res) => {
       trx.insert({
         hash: hash,
         email: email
-  
       })
        .into('login')
        .returning('email')
@@ -241,9 +221,13 @@ app.post('/forgetpassword', (req, res) => {
       let userMail = data[0].email
       let otp = Math.floor((Math.random()*10000)+1)
       let Otpdata = ({mail:userMail,otp:otp})
-      console.log(otp)
-      res.cookie('OTP',process.env.REFRESH_TOKEN_SECRET, { maxAge: 50000, httpOnly: true })
       req.session.OTP = Otpdata
+      console.log(req.session.OTP)
+      res.cookie('OTP',process.env.REFRESH_TOKEN_SECRET, {
+        maxAge: 10000*60*5,
+        httpOnly: true,
+        secure: true,
+       })
       let mailOptions = {
         from: process.env.EMAIL,
         to: userMail,
@@ -257,22 +241,30 @@ app.post('/forgetpassword', (req, res) => {
         } 
       })
       res.json({mailSend : true}) 
-    } else {
-      res.status(400).json("wrong Email")
-    }
+    } 
   })
-   .catch(err => res.status(400).json('wrong Email'))
+  .catch(err => res.status(400).json('wrong Email'))
 })
 
 app.post('/otp',otpChecker, (req, res) =>{
   console.log(req.session.OTP,req.body.email,req.body.otp)
+  const OldOtp = req.session.OTP
      if (req.session.OTP.mail == req.body.email && req.session.OTP.otp == req.body.otp) {
       console.log("mail passed otp")
-      res.json({otp: true, email:req.body.email}) 
+      res.json({otp: true, email:req.body.email})
+      // res.clearCookie('OTP')
     }else{
       res.json({otp: false})
     }     
 })
+// app.post('/otp', (req, res) =>{
+//   console.log("otp post cookies", req.cookies.OTP)
+//   const otp = req.session.OTP
+//   console.log("otp post", req.session.OTP,req.cookies.OTP, req.body.email,req.body.otp)
+  
+//     res.send({message:"hello"})
+//     res.session.OTP = otp    
+// })
 
 app.post('/newpassword', (req, res) =>{
   console.log(req.body)

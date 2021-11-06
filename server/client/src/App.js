@@ -81,6 +81,8 @@ class App extends Component {
       if (response.data.loggedIn) {
         this.setState({user: response.data.sessionUser.user});
         this.onRouteChange ('home')
+      } else if (response.data.OTP){
+        this.onRouteChange ('otp')
       }
     })
   }
