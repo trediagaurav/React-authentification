@@ -1,0 +1,47 @@
+
+  SQL FOR DEPLOYING POSTGRESS DATABASE FROM PGADMIN4 TO HEROKU POSTGRESS OR OTHER DATABASE:
+
+
+sudo -u postgres psql
+
+\list
+
+
+CREATE DATABASE myreactloginreg;
+
+\list
+
+\c myreactloginreg;
+
+\d;
+
+
+
+ CREATE TABLE users
+(
+    id serial NOT NULL PRIMARY KEY,
+    name VARCHAR(100),
+    email text UNIQUE NOT NULL,
+    entries BIGINT DEFAULT 0,
+    joined timestamp with time zone NOT NULL
+
+);
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+CREATE TABLE login
+(
+    id serial NOT NULL PRIMARY KEY,
+    hash VARCHAR(100) NOT NULL,
+    email text UNIQUE NOT NULL
+
+);
+
+////////////// Email Account ////////////
+
+Make a Gmail account and write the details in the .env files to run the mail for otp
+
+
