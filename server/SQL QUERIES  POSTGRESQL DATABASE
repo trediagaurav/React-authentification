@@ -23,8 +23,8 @@ CREATE DATABASE myreactloginreg;
     name VARCHAR(100),
     email text UNIQUE NOT NULL,
     entries BIGINT DEFAULT 0,
-    joined timestamp with time zone NOT NULL
-
+    joined timestamp with time zone NOT NULL,
+    login  TEXT NOT NULL DEFAULT FALSE
 );
 
 
@@ -36,8 +36,7 @@ CREATE TABLE login
 (
     id serial NOT NULL PRIMARY KEY,
     hash VARCHAR(100) NOT NULL,
-    email text UNIQUE NOT NULL
-
+    email text UNIQUE NOT NULL	
 );
 //////////////// Run the app /////////////////////
 

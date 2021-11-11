@@ -148,12 +148,18 @@ app.post('/signin', (req, res) => {
   .then(data => {
     const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
     if(isValid){
-     return db.select('*').from('users')
+      db.select('email', 'hash').from('users')
+      .where('email', '=', req.body.email)
+      .update({ login : "true"})
+      .then(data =>{
+        return db.select('*').from('users')
       .where('email', '=', req.body.email)
       .then(user => {
         req.session.user = user[0]
         res.json({loggedIn: true, user:user[0] })
       })
+      })
+     
        .catch(err => res.status(400).json('unable to get user'))
     } else {
       res.status(400).json("wrong credentials")
