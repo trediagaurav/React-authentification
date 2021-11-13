@@ -68,8 +68,11 @@ app.use((req, res, next) => {
   }
   next();
 });
+// const sessionStore = req.session.user
 
 const sessionChecker = (req, res, next) => {
+  const sessionStore = req.session.user
+  console.log("sessionStore",sessionStore)
   if (req.session.user) {
       next();
   } else {
@@ -130,11 +133,11 @@ const db = knex({
 app.get('/', (req, res) => {
   if(req.session.user){
     console.log('session.user', req.session.user)
-    res.json({loggedIn:true, sessionUser:req.session})
+    res.send({loggedIn:true, sessionUser:req.session})
   }
   if(req.session.OTP && req.cookies.OTP){
-    console.log('session.otp', req.session.OTP)
-    res.json({OTP:true, otp:req.session.otp})
+    console.log('session.otp', req.session.OTP,req.cookies.OTP)
+    res.send({OTP:true, otp:req.session.otp})
   }
 })
 
@@ -273,16 +276,21 @@ app.post('/newpassword', (req, res) =>{
 })
 app.post('/logout', (req, res) => {
   console.log("logout", req.session.user)
-  db.select('email').from('users')
-  .where('email', '=', req.session.user.email)
-  .update({ login : "false"})
-  .then(data => {
+  if(req.session.user){
+    db.select('email').from('users')
+    .where('email', '=', req.session.user.email)
+    .update({ login : "false"})
+    .then(data => {
+      res.clearCookie('user_sid');
+      res.clearCookie('OTP');
+      res.render({loggedOut:true})
+    })
+    .catch(err => res.status(400).send({loggedOut : false}))
+  }else{
     res.clearCookie('user_sid');
     res.clearCookie('OTP');
-    res.render({loggedOut:true})
-    // res.send({loggedOut:true});
-  })
-  .catch(err => res.status(400).send({loggedOut : false}))
+    res.send({loggedOut:true})
+  }  
 })
 
 

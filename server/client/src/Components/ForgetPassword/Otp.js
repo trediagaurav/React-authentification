@@ -52,8 +52,8 @@ export default class Otp extends Component {
         .catch(err => this.setState({notRegister: 'OTP expired, please try again'}))  
     }
     back = () => {
-        axios.get("http://localhost:3001/logout", {withCredentials: true}).then((response) =>{
-            console.log("Logout", response)
+        axios.post("http://localhost:3001/logout", {withCredentials: true}).then((response) =>{
+            console.log("back", response)
         })
         this.props.onRouteChange('forgotPassword');
     }
