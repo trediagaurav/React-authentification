@@ -57,8 +57,8 @@ app.use(
     saveUninitialized: true,
     cookie: {
         httpOnly:true,
-        expires: 3600000*9
-        // expires: 1000*10
+        // expires: 3600000*9
+        expires: 1000*10
     }
   })
 );
@@ -76,8 +76,7 @@ const sessionChecker = (req, res, next) => {
   if (req.session.user) {
       next();
   } else {
-    res.send({loggedIn: false})
-    res.clearCookie('user_sid');
+    res.clearCookie('user_sid').send({loggedIn: false});
   }
 };
 const otpChecker = (req, res, next) => {
@@ -132,7 +131,7 @@ const db = knex({
 //Root Route
 app.get('/', (req, res) => {
   if(req.session.user){
-    console.log('session.user', req.session.user)
+    console.log('session.user', req.session.user,req.sessionID)
     res.send({loggedIn:true, sessionUser:req.session})
   }
   if(req.session.OTP && req.cookies.OTP){
