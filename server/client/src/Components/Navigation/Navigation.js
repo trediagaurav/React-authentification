@@ -7,7 +7,7 @@ const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
         //If we are signedIn display the sign out navigation
         const signOut = () =>{
             onRouteChange('signout')
-            axios.get("http://localhost:3001/logout", {withCredentials: true}).then((response) =>{
+            axios.post("http://localhost:3001/logout", {withCredentials: true}).then((response) =>{
                 if (response.data.loggedOut) {
                     onRouteChange('signout')
                     console.log("Logout", response)
