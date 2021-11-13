@@ -11,8 +11,9 @@ const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
                 if (response.data.loggedOut) {
                     onRouteChange('signout')
                     console.log("Logout", response)
+                }else{
+                    console.log("Error logging out")    
                 }
-                console.log("Error logging out")
             })
         }
 
