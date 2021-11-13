@@ -57,7 +57,9 @@ app.use(
     saveUninitialized: true,
     cookie: {
         httpOnly:true,
-        expires: 3600000*9
+        // expires: 3600000*9,
+        expires: 1000*9,
+        signed: true 
     }
   })
 );
@@ -69,10 +71,11 @@ app.use((req, res, next) => {
 });
 
 const sessionChecker = (req, res, next) => {
-  if (req.session.user && req.cookies.user_sid) {
+  if (req.session.user) {
       next();
   } else {
     res.send({loggedIn: false})
+    res.clearCookie('user_sid');
   }
 };
 
@@ -138,6 +141,8 @@ app.get('/', (req, res) => {
 })
 
 app.post('/text',sessionChecker, (req, res) =>{
+  app.use(cookieParser());
+  console.log("text post", req.session.user, req.cookies.user_sid)
   res.send({message:"Text received"})
 })
 
