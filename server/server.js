@@ -74,8 +74,7 @@ const sessionChecker = (req, res, next) => {
   if (req.session.user) {
       next();
   } else {
-    res.send({loggedIn: false})
-    res.clearCookie('user_sid');
+    res.clearCookie('user_sid').send({loggedIn: false});
   }
 };
 
