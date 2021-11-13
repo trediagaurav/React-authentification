@@ -268,10 +268,23 @@ app.post('/newpassword', (req, res) =>{
   }
   
 })
-app.get('/logout', (req, res) => {
-  res.clearCookie('user_sid');
-  res.clearCookie('OTP');
-  res.send({loggedOut:true});
+app.post('/logout', (req, res) => {
+  console.log("logout", req.session.user)
+  if(req.session.user){
+    db.select('email').from('users')
+    .where('email', '=', req.session.user.email)
+    .update({ login : "false"})
+    .then(data => {
+      res.clearCookie('user_sid');
+      res.clearCookie('OTP');
+      res.render({loggedOut:true})
+    })
+    .catch(err => res.status(400).send({loggedOut : false}))
+  }else{
+    res.clearCookie('user_sid');
+    res.clearCookie('OTP');
+    res.send({loggedOut:true})
+  }  
 })
 
 
