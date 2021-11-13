@@ -70,20 +70,13 @@ app.use((req, res, next) => {
 });
 
 const sessionChecker = (req, res, next) => {
-  if (req.session.user && req.cookies.user_sid) {
+  if (req.session.user) {
       next();
   } else {
-    // db.select('email').from('users')
-    // .where('email', '=', req.session.user.email)
-    // .update({ login : "false"})
-    // .then(data => {
-    //   res.send({loggedIn: false})
-    // })
     res.send({loggedIn: false})
     res.clearCookie('user_sid');
   }
 };
-
 const otpChecker = (req, res, next) => {
   const { email, otp } = req.body;
   if(!email || !otp){
