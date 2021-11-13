@@ -40,7 +40,7 @@ app.use(express.static(__dirname + '/client/src/'));
 
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use(cookieParser());
+app.use(cookieParser('user_sid'));
 
 app.use(cors({
   origin: ["http://localhost:3000"],
@@ -58,6 +58,7 @@ app.use(
     cookie: {
         httpOnly:true,
         expires: 3600000*9
+        // expires: 1000*10
     }
   })
 );
@@ -72,7 +73,14 @@ const sessionChecker = (req, res, next) => {
   if (req.session.user && req.cookies.user_sid) {
       next();
   } else {
+    // db.select('email').from('users')
+    // .where('email', '=', req.session.user.email)
+    // .update({ login : "false"})
+    // .then(data => {
+    //   res.send({loggedIn: false})
+    // })
     res.send({loggedIn: false})
+    res.clearCookie('user_sid');
   }
 };
 
@@ -240,6 +248,7 @@ app.post('/forgetpassword', (req, res) => {
 })
 
 app.post('/otp',otpChecker, (req, res) =>{
+  console.log("otp", req.session.OTP)
   const OldOtp = req.session.OTP
      if (req.session.OTP.mail == req.body.email && req.session.OTP.otp == req.body.otp) {
       res.clearCookie('OTP').clearCookie('user_sid').send({otp: true, email:req.body.email})
@@ -270,34 +279,35 @@ app.post('/newpassword', (req, res) =>{
   
 })
 app.post('/logout', (req, res) => {
-  console.log()
+  console.log("logout", req.session.user)
   db.select('email').from('users')
   .where('email', '=', req.session.user.email)
   .update({ login : "false"})
   .then(data => {
     res.clearCookie('user_sid');
     res.clearCookie('OTP');
-    res.send({loggedOut:true});
+    res.render({loggedOut:true})
+    // res.send({loggedOut:true});
   })
-  
+  .catch(err => res.status(400).send({loggedOut : false}))
 })
 
 
 //Profile params Route
-app.get('/profile/:id', (req, res)=> {
+// app.get('/profile/:id', (req, res)=> {
 
-    const { id } = req.params;
+//     const { id } = req.params;
 
-    db.select('*').from('users').where({id})
-  .then(user => {
-    if(user.length){
-      res.json(user[0]);
-    } else{
-      res.status(400).json('Not found')
-    }
-  })
-   .catch(err => res.status(400).json('Error getting user'))
-})
+//     db.select('*').from('users').where({id})
+//   .then(user => {
+//     if(user.length){
+//       res.json(user[0]);
+//     } else{
+//       res.status(400).json('Not found')
+//     }
+//   })
+//    .catch(err => res.status(400).json('Error getting user'))
+// })
 //TEST ON BROWSER: http://localhost:3001/profile/1
 
 
