@@ -57,8 +57,7 @@ app.use(
     saveUninitialized: true,
     cookie: {
         httpOnly:true,
-        // expires: 3600000*9,
-        expires: 1000*9,
+        expires: 3600000*9,
         signed: true 
     }
   })
