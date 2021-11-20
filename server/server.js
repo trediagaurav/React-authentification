@@ -57,8 +57,8 @@ app.use(
     saveUninitialized: true,
     cookie: {
         httpOnly:true,
-        // expires: 3600000*9
-        expires: 1000*10
+        expires: 3600000*9
+        // expires: 1000*10
     }
   })
 );
@@ -76,7 +76,15 @@ const sessionChecker = (req, res, next) => {
   if (req.session.user) {
       next();
   } else {
-    res.clearCookie('user_sid').send({loggedIn: false});
+    console.log(req.cookies.user)
+    db.select('email').from('users')
+    .where('email', '=', req.cookies.user)
+    .update({ login : "false"})
+    .then(data => {
+      console.log("passed all the data")
+      res.clearCookie('user_sid').clearCookie('user').send({loggedIn: false});
+    })
+    .catch(err => res.status(400).send({loggedIn : false}))
   }
 };
 const otpChecker = (req, res, next) => {
@@ -158,6 +166,11 @@ app.post('/signin', (req, res) => {
         return db.select('*').from('users')
       .where('email', '=', req.body.email)
       .then(user => {
+        req.session.email = user[0].email
+        res.cookie('user',user[0].email, {
+          maxAge: 1000*60*5,
+          httpOnly: true,
+         })
         req.session.user = user[0]
         res.json({loggedIn: true, user:user[0] })
       })
@@ -280,15 +293,11 @@ app.post('/logout', (req, res) => {
     .where('email', '=', req.session.user.email)
     .update({ login : "false"})
     .then(data => {
-      res.clearCookie('user_sid');
-      res.clearCookie('OTP');
-      res.render({loggedOut:true})
+      res.clearCookie('user_sid').clearCookie('OTP').clearCookie('user').send({loggedOut:true});
     })
     .catch(err => res.status(400).send({loggedOut : false}))
   }else{
-    res.clearCookie('user_sid');
-    res.clearCookie('OTP');
-    res.send({loggedOut:true})
+    res.clearCookie('user_sid').clearCookie('OTP').send({loggedOut:true});
   }  
 })
 
