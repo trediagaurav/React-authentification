@@ -6,7 +6,6 @@ import Signin from "../Signin/Signin";
 const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
         //If we are signedIn display the sign out navigation
         const signOut = () =>{
-            onRouteChange('signout')
             axios.post("http://localhost:3001/logout", {withCredentials: true}).then((response) =>{
                 console.log("logout", response.data)
                 if (response.data.loggedOut) {

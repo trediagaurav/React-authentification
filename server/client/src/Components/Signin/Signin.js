@@ -54,7 +54,6 @@ class Signin extends React.Component {
         .then(response => response.json())
         .then(data => {
             if(data.user){
-                let loginName = data.user.name
                 this.setState({loginName:data.user.name})
                 if(data.user.id){
                     this.props.loadUser(data.user);
