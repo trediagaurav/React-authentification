@@ -42,7 +42,6 @@ class App extends Component {
 
   //Function to load the user when register form is inputed(pass function to Register Component)
   loadUser = (data) => {
-    this.setState({changeEmail: data})
     this.setState({user: {
       id: data.id,
       name: data.name,
@@ -125,7 +124,7 @@ class App extends Component {
 
             :
               //else return the route to Register
-              route === 'newPassword' && changeEmail ?
+              route === 'newPassword' ?
               <NewPassword email={this.state.changeEmail} onRouteChange={this.onRouteChange} />
       
             :

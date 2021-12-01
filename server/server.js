@@ -149,6 +149,8 @@ app.get('/', (req, res) => {
 })
 
 app.post('/text',sessionChecker, (req, res) =>{
+  app.use(cookieParser());
+  console.log("text post", req.session.user, req.cookies.user_sid)
   res.send({message:"Text received"})
 })
 
@@ -259,6 +261,7 @@ app.post('/otp',otpChecker, (req, res) =>{
   console.log("otp", req.session.OTP)
   const OldOtp = req.session.OTP
      if (req.session.OTP.mail == req.body.email && req.session.OTP.otp == req.body.otp) {
+      req.session.email = req.body.email
       res.clearCookie('OTP').clearCookie('user_sid').send({otp: true, email:req.body.email})
     }else{
       res.send({otp: false})
@@ -266,14 +269,14 @@ app.post('/otp',otpChecker, (req, res) =>{
 })
 
 app.post('/newpassword', (req, res) =>{
-  const { email, newPassword, confirmPassword } = req.body;
-    if(!email || !newPassword || !confirmPassword){
+  const { newPassword, confirmPassword } = req.body;
+    if( !newPassword || !confirmPassword){
       return res.json({missingPassword : true});
     }
     if(newPassword === confirmPassword){
       const newhash = bcrypt.hashSync(confirmPassword);
       db.select('email').from('login')
-      .where('email', '=', email)
+      .where('email', '=', req.session.email)
       .update({
         hash: newhash,
       })
