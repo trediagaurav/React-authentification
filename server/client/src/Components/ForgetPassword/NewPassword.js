@@ -6,10 +6,7 @@ export default class ForgetPassword extends Component {
 
     constructor(props){
         super(props)
-
         this.state = {
-
-            email: this.props.email,
 
             newPassword: '',
 
@@ -37,7 +34,6 @@ export default class ForgetPassword extends Component {
             credentials:'include',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                email: this.state.email,
                 newPassword: this.state.newPassword,
                 confirmPassword: this.state.confirmPassword
             })
