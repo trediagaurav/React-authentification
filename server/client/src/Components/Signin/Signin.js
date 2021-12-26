@@ -53,6 +53,11 @@ class Signin extends React.Component {
         })
         .then(response => response.json())
         .then(data => {
+            if (data.signIn === false) {
+                this.setState({notRegister: 'Email or Password not match'})
+            }else if(data.wrongMail === true){
+                this.setState({notRegister: 'You are not registered'});
+            }
             if(data.user){
                 this.setState({loginName:data.user.name})
                 if(data.user.id){

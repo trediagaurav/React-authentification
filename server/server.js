@@ -156,34 +156,41 @@ app.post('/text',sessionChecker, (req, res) =>{
 
 //Check the input from the frontend sign in from with the user data from the database
 app.post('/signin', (req, res) => {
-  db.select('email', 'hash').from('login')
+  db.select('email').from('login')
   .where('email', '=', req.body.email)
   .then(data => {
-    const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
-    if(isValid){
-      db.select('email', 'hash').from('users')
+    if(data[0].email === req.body.email){
+      db.select('email', 'hash').from('login')
       .where('email', '=', req.body.email)
-      .update({ login : "true"})
-      .then(data =>{
-        return db.select('*').from('users')
-      .where('email', '=', req.body.email)
-      .then(user => {
-        req.session.email = user[0].email
-        res.cookie('user',user[0].email, {
-          maxAge: 1000*60*5,
-          httpOnly: true,
-         })
-        req.session.user = user[0]
-        res.json({loggedIn: true, user:user[0] })
+      .then(data => {
+        const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
+        if(isValid){
+          db.select('email', 'hash').from('users')
+          .where('email', '=', req.body.email)
+          .update({ login : "true"})
+          .then(data =>{
+            return db.select('*').from('users')
+          .where('email', '=', req.body.email)
+          .then(user => {
+            req.session.email = user[0].email
+            res.cookie('user',user[0].email, {
+              maxAge: 1000*60*5,
+              httpOnly: true,
+            })
+            req.session.user = user[0]
+            res.json({loggedIn: true, user:user[0] })
+          })
+          })
+        
+          .catch(err => res.status(400).json({signIn:false}))
+        } else {
+          res.status(400).json({signIn:false})
+        }
       })
-      })
-     
-       .catch(err => res.status(400).json('unable to get user'))
-    } else {
-      res.status(400).json("wrong credentials")
+      .catch(err => res.status(400).json('wrong credentials'))
     }
   })
-   .catch(err => res.status(400).json('wrong credentials'))
+  .catch(err => res.status(400).send({wrongMail:true}))
 })
 
 //Check input from the frontend register form with the data in the database, insert the data in the database
