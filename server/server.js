@@ -52,7 +52,7 @@ app.use(cors({
 app.use(
   session({
     key: 'user_sid',
-    secret: process.env.ACCESS_TOKEN_SECRET,
+    secret: process.env.ACCESS_TOKEN_SECRET, //Please create .env file and write a random key//
     resave: false,
     saveUninitialized: true,
     cookie: {
@@ -106,8 +106,8 @@ const otpChecker = (req, res, next) => {
 let transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL,
-    pass: process.env.PASSWORD
+    user: process.env.EMAIL, //Please create .env file and write a emailID//
+    pass: process.env.PASSWORD //Please create .env file and write password//
   }
 });
 
@@ -243,7 +243,7 @@ app.post('/forgetpassword', (req, res) => {
       let Otpdata = ({mail:userMail,otp:otp})
       req.session.OTP = Otpdata
       console.log(req.session.OTP)
-      res.cookie('OTP',process.env.REFRESH_TOKEN_SECRET, {
+      res.cookie('OTP',process.env.REFRESH_TOKEN_SECRET, { //Please create .env file and write a random key//
         maxAge: 1000*60*5,
         httpOnly: true,
        })
