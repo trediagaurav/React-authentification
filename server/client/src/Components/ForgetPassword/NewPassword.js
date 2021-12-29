@@ -86,13 +86,11 @@ export default class ForgetPassword extends Component {
                                 }
                             }} />
                             </div>
-                                {/* <label Name="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" /> Remember me</label> */}
                             </fieldset>
                             <div className="">
                                 <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Submit" disabled={(this.state.signInEmail === "") ? true : false } onClick={this.onSubmit} style={{borderRadius:"4px"}}/>
                             </div>
                             <div className="lh-copy mt3">
-                                {/* <p onClick={this.back}  className="f6 link dim black db pointer">Back</p> */}
                                 {(this.state.signInEmail === "") ? <div className="emptyFiledMsg"><span>Empty Fields</span></div> : null }
                             <div className="text-danger"><span>{this.state.notRegister}</span></div>
                             </div>

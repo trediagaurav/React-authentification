@@ -99,7 +99,6 @@ class Signin extends React.Component {
                                }
                             }} />
                         </div>
-                        {/* <label className="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" /> Remember me</label> */}
                     </fieldset>
                     <div className="">
                         <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in" disabled={(this.state.signInEmail === "" || this.state.signInPassword === "") ? true : false } onClick={this.onSubmitSignIn} style={{borderRadius:"4px"}}/>
@@ -111,8 +110,7 @@ class Signin extends React.Component {
                         <p   onClick={ () => onRouteChange('forgotPassword')} className="f6 link dim blue db f6 pointer">Forgot password ?</p>
                     </div>
                 </div>
-            </main>
-    
+            </main> 
             </article>
     
         );

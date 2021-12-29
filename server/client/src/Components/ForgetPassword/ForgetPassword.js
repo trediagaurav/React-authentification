@@ -69,7 +69,6 @@ export default class ForgetPassword extends Component {
                                     }
                                 }} />
                                 </div>
-                                {/* <label Name="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" /> Remember me</label> */}
                             </fieldset>
                             <div className="">
                                 <input className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Send OTP" disabled={(this.state.signInEmail === "") ? true : false } onClick={this.onSubmit} style={{borderRadius:"4px"}}/>

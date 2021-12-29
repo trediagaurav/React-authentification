@@ -1,7 +1,5 @@
-import cookieParser from 'cookie-parser';
 import React from 'react';
 import axios from "axios";
-import Signin from "../Signin/Signin";
 //Recieve the onRouteChange Prop from App.js and isSignedIn
 const Navigation = ({ onRouteChange, isSignedIn, loadUser }) => {
         //If we are signedIn display the sign out navigation

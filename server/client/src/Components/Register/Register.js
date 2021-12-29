@@ -1,5 +1,4 @@
 import React from 'react';
-import {Button} from 'react-bootstrap'
 import './Register.css';
 
 
@@ -84,13 +83,8 @@ class Register extends React.Component {
     }
 
     render(){
-
-        // const { onRouteChange } = this.props
-
         return (
-
             <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
-    
             <main className="pa4 black-80">
                 <div className="measure">
                     <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
@@ -107,15 +101,11 @@ class Register extends React.Component {
                             <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
                             <input className=" pa2 input-reset ba bg-transparent hover-bg-black hover-black w-100" type="password" name="password" id="password" placeholder="Enter your password" required onChange={this.onPasswordChange} required autoComplete="off"/>
                         </div>
-                        {/* <label className="pa0 ma0 lh-copy f6 pointer"><input type="checkbox" /> Remember me</label> */}
                     </fieldset>
                     <div className="">
-                        {/* <input onClick={ this.onSubmitSignIn } className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Register" disabled={(this.state.name === "" || this.state.name.length > 8 || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? true : false } /> */}
                         <input onClick={ this.onSubmitSignIn } className="RegisterButton" type="submit" value="Submit" disabled={(this.state.name === "" || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? true : false }/>
-
                         {(this.state.name === "" || this.state.name.length > 8 || this.state.email === "" || !validEmailRegex.test(this.state.email) || this.state.password === "") ? <div className="emptyInpMsg text-danger"><span>Fill all the Credentials</span></div> : null }
                         <div className="emptyInpMsg text-danger" ><span>{this.state.notRegister}</span></div>
-
                     </div>
                 </div>
             </main>
