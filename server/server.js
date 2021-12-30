@@ -45,13 +45,13 @@ app.use(cookieParser());
 //CONNECT TO LOCAL POSTGRESQL DATABASE
 const db = knex({
 
-     client: 'pg',
-     connection: {
-     port: '5432',
-     host : '127.0.0.1',
-     user : 'postgres',
-     password : 'jaan143',
-     database : 'Auth'
+  client: process.env.client,
+  connection: {
+  port: process.env.port,
+  host : process.env.host,
+  user : process.env.user,
+  password : process.env.password,
+  database : process.env.database
 
     }
 
