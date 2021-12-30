@@ -58,7 +58,6 @@ app.use(
     cookie: {
         httpOnly:true,
         expires: 3600000*9
-        // expires: 1000*10
     }
   })
 );
@@ -114,13 +113,13 @@ let transporter = nodemailer.createTransport({
 //CONNECT TO LOCAL POSTGRESQL DATABASE
 const db = knex({
 
-     client: 'pg',
+     client: process.env.client,
      connection: {
-     port: '5432',
-     host : '127.0.0.1',
-     user : 'postgres',
-     password : 'jaan143',
-     database : 'Auth'
+     port: process.env.port,
+     host : process.env.host,
+     user : process.env.user,
+     password : process.env.password,
+     database : process.env.database
     }
   });
 
