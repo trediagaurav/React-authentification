@@ -12,6 +12,7 @@ Routes:
 
 
 */
+
 require('dotenv').config()
 
 const express = require('express');
@@ -113,13 +114,13 @@ let transporter = nodemailer.createTransport({
 //CONNECT TO LOCAL POSTGRESQL DATABASE
 const db = knex({
 
-     client: process.env.client,
+     client: 'pg',
      connection: {
-     port: process.env.port,
-     host : process.env.host,
-     user : process.env.user,
-     password : process.env.password,
-     database : process.env.database
+     port: '5432',
+     host : '127.0.0.1',
+     user : 'postgres',
+     password : 'jaan143',
+     database : 'Auth'
     }
   });
 
@@ -138,23 +139,21 @@ const db = knex({
 //Root Route
 app.get('/', (req, res) => {
   if(req.session.user){
-    console.log('session.user', req.session.user,req.sessionID)
     res.send({loggedIn:true, sessionUser:req.session})
   }
   if(req.session.OTP && req.cookies.OTP){
-    console.log('session.otp', req.session.OTP,req.cookies.OTP)
     res.send({OTP:true, otp:req.session.otp})
   }
 })
 
 app.post('/text',sessionChecker, (req, res) =>{
   app.use(cookieParser());
-  console.log("text post", req.session.user, req.cookies.user_sid)
   res.send({message:"Text received"})
 })
 
 //Check the input from the frontend sign in from with the user data from the database
 app.post('/signin', (req, res) => {
+  console.log(req.body)
   db.select('email').from('login')
   .where('email', '=', req.body.email)
   .then(data => {
@@ -253,7 +252,7 @@ app.post('/forgetpassword', (req, res) => {
         text:`Given Otp for the new password ${otp}, will expire in 5 minutes.`
       };
       transporter.sendMail(mailOptions, function(){
-        if (err) {
+        if(err) {
           console.log('mail error occurs', err)
         } 
       })
